@@ -64,7 +64,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -120,7 +120,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -186,7 +186,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -238,7 +238,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -265,7 +265,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -300,7 +300,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -356,7 +356,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -397,7 +397,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -429,7 +429,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -474,7 +474,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -527,7 +527,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -559,7 +559,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -594,7 +594,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -639,7 +639,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 ---
@@ -683,7 +683,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 
@@ -715,7 +715,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": error.message
+  "error": "Something Went Wrong"
 }
 ```
 ---
