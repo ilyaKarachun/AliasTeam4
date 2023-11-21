@@ -74,26 +74,6 @@ Content-Type: application/json
 }
 ```
 
-Client Error:
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Password must be at least 8 characters long and include numbers. "
-}
-```
-
-Client Error:
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "User with such username already exists."
-}
-```
-
 Server Error:
 
 ```
@@ -136,17 +116,7 @@ Client Error:
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 {
-  "error": "Invalid username."
-}
-```
-
-Client Error:
-
-```
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json
-{
-  "error": "Invalid password."
+  "error": "Wrong Email Or Password"
 }
 ```
 
@@ -158,25 +128,6 @@ Content-Type: application/json
 {
   "error": "Something Went Wrong"
 }
-```
-
----
-
-**Get all users profile information.**
-
-Request:
-
-```
-GET /users HTTP/1.1
-```
-
-Success Response:
-HTTP/1.1 400 OK
-
-```
-[
-  **???**
-]
 ```
 
 ---
@@ -292,7 +243,6 @@ Success Response:
 
 ```
 HTTP/1.1 204 No Content
-
 ```
 
 Server Error:
@@ -342,7 +292,7 @@ Content-Type: application/json
 
 ---
 
-**Retrieve all games information.**
+**Retrieve information about all games.**
 
 Request:
 
@@ -398,7 +348,7 @@ Content-Type: application/json
 
 ---
 
-**Change parameter ???.**
+**Join the game.**
 
 Query Parameters:
 
@@ -409,7 +359,7 @@ Query Parameters:
 Request:
 
 ```
-PUT /games/:gameId HTTP/1.1
+PUT /games/:gameId/join HTTP/1.1
 Content-Type: application/json
 Request Body:
 {
@@ -423,7 +373,7 @@ Success Response:
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-  "message": "??? Parameter was updated successfully."
+  "message": "Player joined to the game successfully."
 }
 ```
 
@@ -469,7 +419,7 @@ Content-Type: application/json
 }
 ```
 
-### Endpoint /words <a name="endpoints-words"></a>
+### Endpoint /words 
 
 **Add a new word.**
 
@@ -516,29 +466,12 @@ Content-Type: application/json
 
 ---
 
-**Get all words.**
-
-Request:
-
-```
-GET /words HTTP/1.1
-```
-
-Success Response:
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-[
-  "word1",
-  "word2",
-  "word3"
-]
-```
-
----
-
 **Get a random word.**
+
+| Parameter | Type   | Description                   | Required |
+| --------- | ------ | ----------------------------- | -------- |
+| `wordId`  | number | The id of the word to delete  | Yes      |
+
 
 Request:
 
@@ -573,9 +506,7 @@ Content-Type: application/json
 
 Query Parameters:
 
-| Parameter | Type   | Description         | Required |
-| --------- | ------ | ------------------- | -------- |
-| `word`    | string | The word to delete. | Yes      |
+
 
 Request:
 
