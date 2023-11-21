@@ -1,15 +1,16 @@
-## APIs
+# APIs
 
 ~~Documentation for each API endpoint including authentication, game control, and chat functionalities.~~
 
-### Content
+## Content: <a name="content"></a>
 
--[Endpoint /users](#endpoint-users)
--[Endpoint /games](#endpoint-games)
--[Endpoint /words](#endpoint-words)
--[Endpoint /chats](#endpoint-chats)
+- [Endpoint /users](#endpoint-users)
+- [Endpoint /games](#endpoint-games)
+- [Endpoint /words](#endpoint-words)
+- [Endpoint /chats](#endpoint-chats)
+ 
 
-### Endpoint /users <a name="endpoints-users"></a>
+## Endpoint /users <a name="endpoints-users"></a>
 
 **Register a new user account.**
 
@@ -268,7 +269,7 @@ Content-Type: application/json
 }
 ```
 
-### Endpoint /games <a name="endpoints-games"></a>
+## Endpoint /games <a name="endpoints-games"></a>
 
 **Create a new game.**
 
@@ -432,7 +433,7 @@ Content-Type: application/json
 }
 ```
 
-### Endpoint /words <a name="endpoints-words"></a>
+## Endpoint /words <a name="endpoints-words"></a>
 
 **Add a new word.**
 
@@ -562,7 +563,7 @@ Content-Type: application/json
 }
 ```
 
-### Endpoint /chats <a name="endpoints-chats"></a>
+## Endpoint /chats <a name="endpoints-chats"></a>
 
 **Create new chat.**
 
@@ -717,3 +718,6 @@ Content-Type: application/json
   "error": error.message
 }
 ```
+---
+
+[⬆ Go Up ⬆](#content)
