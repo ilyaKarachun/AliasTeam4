@@ -1,8 +1,9 @@
 import * as jwt from 'jsonwebtoken';
+import { CreateUserDto } from '../dto/user.dto';
 
 class TokenService {
-  generateToken(tokenData: any): string {
-    const token = jwt.sign({ id: 12 }, process.env.JWT_SECRET as string, {
+  generateToken(tokenData: CreateUserDto): string {
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET as string, {
       expiresIn: process.env.JWT_EXPIRATION_TIME,
     });
     return token;

@@ -24,7 +24,7 @@ class UserService {
 
     return {
       user: data,
-      token: this.tokenService.generateToken({ userId: 1, email: '123' }),
+      token: this.tokenService.generateToken(data),
     };
   }
 }
