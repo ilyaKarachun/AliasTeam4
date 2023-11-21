@@ -62,6 +62,28 @@ class UserController {
       return next(e);
     }
   }
+  async updateStatistics(req, res, next) {
+    try {
+      // create updateStatistics method
+      // await userService.updateStatistics(req.body);
+
+      return res.status(200).json({
+        message: 'User statistics was updated successfully.',
+      });
+    } catch (e) {
+      return next(e);
+    }
+  }
+  async deleteUser(req, res, next) {
+    try {
+      // create deleteUser method
+      // await userService.deleteUser(req.body.userId);
+
+      return res.status(204);
+    } catch (e) {
+      return next(e);
+    }
+  }
 }
 
 export default new UserController();
