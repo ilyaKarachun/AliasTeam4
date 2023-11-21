@@ -62,6 +62,19 @@ class UserController {
       return next(e);
     }
   }
+  async getUserById(req, res, next) {
+    try {
+      let result;
+      // create getUser method
+      // const result = await userService.getUser(req.params.userId);
+
+      return res.status(200).json({
+        ...result,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
   async updateStatistics(req, res, next) {
     try {
       // create updateStatistics method

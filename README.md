@@ -472,10 +472,6 @@ Content-Type: application/json
 
 **Get a random word.**
 
-| Parameter | Type   | Description                  | Required |
-| --------- | ------ | ---------------------------- | -------- |
-| `wordId`  | number | The id of the word to delete | Yes      |
-
 Request:
 
 ```
@@ -505,9 +501,54 @@ Content-Type: application/json
 
 ---
 
+**Update a word by id.**
+
+Query Parameters:
+
+| Parameter | Type   | Description                  | Required |
+| --------- | ------ | ---------------------------- | -------- |
+| `wordId`  | number | The id of the word to update | Yes      |
+
+Request:
+
+```
+PATCH /words/:wordId HTTP/1.1
+Content-Type: application/json
+Request body:
+{
+  "word": "potato"
+}
+```
+
+Success Response:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+  "message": "Your word was updated successfully."
+}
+```
+
+Server Error:
+
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+{
+  "error": "Something Went Wrong"
+}
+```
+
+---
+
 **Delete a word.**
 
 Query Parameters:
+
+| Parameter | Type   | Description                  | Required |
+| --------- | ------ | ---------------------------- | -------- |
+| `wordId`  | number | The id of the word to delete | Yes      |
 
 Request:
 
