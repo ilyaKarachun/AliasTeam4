@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
 import { userService } from '../services/user.service';
@@ -62,7 +63,7 @@ class UserController {
       return next(e);
     }
   }
-  async getUserById(req, res, next) {
+  async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       let result;
       // create getUser method
@@ -75,7 +76,7 @@ class UserController {
       next(e);
     }
   }
-  async updateStatistics(req, res, next) {
+  async updateStatistics(req: Request, res: Response, next: NextFunction) {
     try {
       // create updateStatistics method
       // await userService.updateStatistics(req.body);
@@ -87,7 +88,7 @@ class UserController {
       return next(e);
     }
   }
-  async deleteUser(req, res, next) {
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
       // create deleteUser method
       // await userService.deleteUser(req.body.userId);

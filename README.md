@@ -99,8 +99,6 @@ Content-Type: application/json
 
 **Login an existing user.**
 
-For user authorization, a JWT (JSON Web Token) is generated based on the provided user data and a secret key. The token has an expiration time of 2 hours.
-
 Request:
 
 ```
@@ -157,6 +155,7 @@ Request:
 
 ```
 GET /users/:userId HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -241,6 +240,7 @@ Request:
 
 ```
 DELETE /users/:userId HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -268,9 +268,10 @@ Request:
 ```
 POST /games HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer your_access_token
 Request Body:
 {
-  **???**
+  user_id: "1"
 }
 ```
 
@@ -280,7 +281,7 @@ Success Response:
 HTTP/1.1 201 Created
 Content-Type: application/json
 {
-  "game_id": game_id
+  "message": "Game successfully created."
 }
 ```
 
@@ -302,6 +303,7 @@ Request:
 
 ```
 GET /games HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -309,8 +311,40 @@ HTTP/1.1 400 OK
 
 ```
 [
-  **???**
+  {
+    "gameID": "1",
+    "status": "creating",
+    "team1": {
+      "participants": ["1", "2"],
+      "chatID": "123",
+      "words": [],
+      "score": []
+    },
+    "team2": {
+      "participants": [],
+      "chatID": "124",
+      "words": [],
+      "score": []
+    }
+  },
+  {
+    "gameID": "2",
+    "status": "playing",
+    "team1": {
+      "participants": ["3", "4", "8"],
+      "chatID": "856",
+      "words": ["potato", "watermelon", "cat"],
+      "score": []
+    },
+    "team2": {
+      "participants": ["10", "21", "14"],
+      "chatID": "858",
+      "words": ["potato", "watermelon", "cat"],
+      "score": []
+    }
+  }
 ]
+
 ```
 
 ---
@@ -327,6 +361,7 @@ Request:
 
 ```
 GET /games/:gameId/winner HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -336,7 +371,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "${teamWinner} is the winner! Congradulations!!!"
+  "message": "Team number ${number} is the winner! Congradulations!!!"
 }
 ```
 
@@ -365,9 +400,10 @@ Request:
 ```
 PUT /games/:gameId/join HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer your_access_token
 Request Body:
 {
-  **???**
+  userId: "23"
 }
 ```
 
@@ -378,6 +414,48 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 {
   "message": "Player joined to the game successfully."
+}
+```
+
+Server Error:
+
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+{
+  "error": "Something Went Wrong"
+}
+```
+
+---
+
+**Go to team chat.**
+
+Query Parameters:
+
+| Parameter | Type   | Description                                 | Required |
+| --------- | ------ | ------------------------------------------- | -------- |
+| `gameId`  | number | The unique identifier of the game to fetch. | Yes      |
+
+Request:
+
+```
+GET /games/:gameId/chat HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer your_access_token
+Request Body:
+{
+  chatId: "23"
+}
+```
+
+Success Response:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+  "message": "Player in the chat."
 }
 ```
 
@@ -405,6 +483,7 @@ Request:
 
 ```
 DELETE /games/:gameId HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -432,6 +511,7 @@ Request:
 ```
 POST /words HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer your_access_token
 Request Body:
 {
   "word": "newWord"
@@ -476,6 +556,7 @@ Request:
 
 ```
 GET /words/randomWord HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -512,8 +593,9 @@ Query Parameters:
 Request:
 
 ```
-PATCH /words/:wordId HTTP/1.1
+PUT /words/:wordId HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer your_access_token
 Request body:
 {
   "word": "potato"
@@ -554,163 +636,7 @@ Request:
 
 ```
 DELETE /words/:word HTTP/1.1
-```
-
-Success Response:
-
-```
-HTTP/1.1 204 No Content
-```
-
-Server Error:
-
-```
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-  "error": "Something Went Wrong"
-}
-```
-
-### Endpoint /chats <a name="endpoints-chats"></a>
-
-**Create new chat.**
-
-Request:
-
-```
-POST /chats HTTP/1.1
-Content-Type: application/json
-Request Body:
-{
-  **???**
-}
-```
-
-Success Response:
-
-```
-HTTP/1.1 201 Created
-Content-Type: application/json
-{
-  "chat_id": chat_id
-}
-```
-
-Server Error:
-
-```
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-  "error": "Something Went Wrong"
-}
-```
-
----
-
-**Get a specific chat by chat_id.**
-
-Query Parameters:
-
-| Parameter | Type   | Description                                 | Required |
-| --------- | ------ | ------------------------------------------- | -------- |
-| `chatId`  | number | The unique identifier of the chat to fetch. | Yes      |
-
-Request:
-
-```
-GET /chats/:chatId HTTP/1.1
-```
-
-Success Response:
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-[**???**]
-```
-
-Client Error:
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Invalid chat id."
-}
-```
-
-Server Error:
-
-```
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-  "error": "Something Went Wrong"
-}
-```
-
----
-
-**Get all messages in a chat**
-
-Query Parameters:
-
-| Parameter | Type   | Description                                 | Required |
-| --------- | ------ | ------------------------------------------- | -------- |
-| `chatId`  | number | The unique identifier of the chat to fetch. | Yes      |
-
-Request:
-
-```
-GET /chats/:chatId/messages HTTP/1.1
-```
-
-Success Response:
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-[**???**]
-```
-
-Client Error:
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Invalid chat id."
-}
-```
-
-Server Error:
-
-```
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-  "error": "Something Went Wrong"
-}
-```
-
----
-
-**Delete a chat.**
-
-Query Parameters:
-
-| Parameter | Type   | Description                                  | Required |
-| --------- | ------ | -------------------------------------------- | -------- |
-| `chatId`  | number | The unique identifier of the chat to delete. | Yes      |
-
-Request:
-
-```
-DELETE /chats/:chatId HTTP/1.1
+Authorization: Bearer your_access_token
 ```
 
 Success Response:
@@ -735,9 +661,25 @@ Content-Type: application/json
 - **Game Model**: Players, scores, words.
 - **Chat Model**: Messages, timestamps, users.
 
-## Security
+## User Authorization
 
-Overview of implemented security measures.
+User authorization in this system is facilitated through the use of JSON Web Tokens (JWT). Upon successful authentication with the provided user credentials, a JWT is generated using a secure secret key. This token serves as a digital credential that encapsulates user identity information and is used for subsequent authorization.
+
+### JWT Generation
+
+The JWT is generated by encoding user-specific data and signing it with a secret key. The encoded information typically includes user identifiers, roles, or any other necessary data for authentication purposes. This process ensures the integrity and authenticity of the token.
+
+### Token Expiration
+
+To enhance security, each JWT has an expiration time of 2 hours. This means that after this period, the token will no longer be valid, and users will need to re-authenticate to obtain a new token.
+
+### Session Validation
+
+Throughout the user's active session, each HTTP request to the server includes the JWT in the request headers. The server then validates the token to ensure its authenticity and checks if it has expired. If the token is valid and within its expiration period, the request is processed; otherwise, the server responds with an authorization error.
+
+This approach provides a secure and efficient means of managing user sessions, enhancing the overall security of the authentication process.
+
+**Note:** It's crucial to keep the secret key used for JWT signing secure, as it plays a vital role in maintaining the integrity of the tokens.
 
 ## Testing
 

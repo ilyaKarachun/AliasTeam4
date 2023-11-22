@@ -1,8 +1,9 @@
+import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
 
 class WordController {
-  async addWord(req, res, next) {
+  async addWord(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
       const errors = validateObject(body, {
@@ -25,7 +26,7 @@ class WordController {
       next(e);
     }
   }
-  async getRandomWord(req, res, next) {
+  async getRandomWord(req: Request, res: Response, next: NextFunction) {
     try {
       let result;
       // create getRandomWord() method
@@ -35,7 +36,7 @@ class WordController {
       return next(e);
     }
   }
-  async updateWord(req, res, next) {
+  async updateWord(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
 
@@ -60,7 +61,7 @@ class WordController {
     }
   }
 
-  async deleteWord(req, res, next) {
+  async deleteWord(req: Request, res: Response, next: NextFunction) {
     try {
       // create deleteWord() method
       // await wordService.deleteWord(req.params.wordId);
