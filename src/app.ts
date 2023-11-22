@@ -5,9 +5,10 @@ import api from './router';
 import cors from 'cors';
 import errorHandlerMiddleWare from './middlewares/errorHandler.middleware';
 import { createDatabase, dbName } from './database/database';
+import expressWs from 'express-ws';
 
 dotenv.config();
-const app = express();
+const app = expressWs(express()).app;
 const port = process.env.PORT || 3000;
 
 app.use(cors());
@@ -22,9 +23,7 @@ app.get('/', (request: Request, response: Response) => {
   });
 });
 
-app.listen(port, () =>
-  console.log(`Running on port ${port}`),
-);
+app.listen(port, () => console.log(`Running on port ${port}`));
 
 async function startApp() {
   try {
