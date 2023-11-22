@@ -22,9 +22,7 @@ app.get('/', (request: Request, response: Response) => {
   });
 });
 
-app.listen(port, () =>
-  console.log(`Running on port ${port}`),
-);
+app.listen(port, () => console.log(`Running on port ${port}`));
 
 async function startApp() {
   try {
@@ -33,5 +31,12 @@ async function startApp() {
     console.error('Error:', error);
   }
 }
+
+import rootWordRecognition from '../src/helpers/rootWordRecognition';
+const word = 'смелость';
+const description = 'осмелиться ';
+console.log(rootWordRecognition(word, description));
+console.log(rootWordRecognition(word, 'осмкл5ился'));
+console.log(rootWordRecognition(word, 'осёл'));
 
 startApp();
