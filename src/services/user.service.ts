@@ -27,7 +27,7 @@ class UserService {
       token: this.tokenService.generateToken(data),
     };
   }
-  getUserById(id: string) {
+  getUserById({ id }: { id: string }) {
     let result;
     /**
      * add method connect to db
@@ -39,13 +39,19 @@ class UserService {
       status: result.status,
     });
   }
-  updateStatistics(statistic: Record<string, any>, id: string) {
+  updateStatistics({
+    statistic,
+    id,
+  }: {
+    statistic: Record<string, any>;
+    id: string;
+  }) {
     /**
      * add method connect to db
      */
     return;
   }
-  deleteUser(id: string) {
+  deleteUser({ id }: { id: string }) {
     /**
      * add method connect to db
      */
