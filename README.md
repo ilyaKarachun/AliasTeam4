@@ -1,5 +1,25 @@
 # Node.js-Based Game "Alias" with Chat and Word Checking
 
+### Test post and get requests
+
+Plese use this command for starting container:
+```
+docker compose -f docker-compose.dev.yaml up
+```
+
+you can create a new document via POSTMAN:
+```
+POST
+http://localhost:5000/api/v1/document/create
+```
+
+you can get all documents via POSTMAN:
+
+```
+GET
+http://localhost:5000/api/v1/document/alldata
+```
+
 ## Overview
 
 This document outlines the Alias game, a multiplayer game built with Node.js. It includes chat functionality and a feature to check for similar words.
