@@ -1,4 +1,4 @@
-import { CreateUserDto } from '../dto/user.dto';
+import { CreateUserDto, UserDto } from '../dto/user.dto';
 import HttpException from '../exceptions/httpException';
 import { TokenService, tokenService } from './token.service';
 
@@ -26,6 +26,36 @@ class UserService {
       user: data,
       token: this.tokenService.generateToken(data),
     };
+  }
+  getUserById({ id }: { id: string }) {
+    let result;
+    /**
+     * add method connect to db
+     */
+    return new UserDto({
+      username: result.username,
+      email: result.email,
+      statistic: result.statistic,
+      status: result.status,
+    });
+  }
+  updateStatistics({
+    statistic,
+    id,
+  }: {
+    statistic: Record<string, any>;
+    id: string;
+  }) {
+    /**
+     * add method connect to db
+     */
+    return;
+  }
+  deleteUser({ id }: { id: string }) {
+    /**
+     * add method connect to db
+     */
+    return;
   }
 }
 

@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
 import { userService } from '../services/user.service';
@@ -58,6 +59,40 @@ class UserController {
         password: body.password,
       });
       return res.status(200).json({ ...result });
+    } catch (e) {
+      return next(e);
+    }
+  }
+  async getUserById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await userService.getUserById({ id: req.params.userId });
+
+      return res.status(200).json({
+        ...result,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async updateStatistics(req: Request, res: Response, next: NextFunction) {
+    try {
+      await userService.updateStatistics({
+        statistic: req.body,
+        id: req.params.userId,
+      });
+
+      return res.status(200).json({
+        message: 'User statistics was updated successfully.',
+      });
+    } catch (e) {
+      return next(e);
+    }
+  }
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      await userService.deleteUser({ id: req.body.userId });
+
+      return res.status(204).send();
     } catch (e) {
       return next(e);
     }
