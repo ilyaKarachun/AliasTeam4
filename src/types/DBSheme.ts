@@ -1,4 +1,5 @@
 export interface User {
+  type: 'user';
   username: string;
   email: string;
   password: string;
@@ -7,6 +8,7 @@ export interface User {
 }
 
 export interface Team {
+  type: 'team';
   participants: string[];
   chatID?: string;
   words: string[];
@@ -18,6 +20,7 @@ export interface Team {
 }
 
 export interface Game {
+  type: 'game';
   status?: 'creating' | 'playing' | 'finished';
   team1: Team;
   team2: Team;
@@ -25,6 +28,7 @@ export interface Game {
 }
 
 export interface Chat {
+  type: 'chat';
   messages: {
     timestamp: string;
     sender: string;
@@ -34,5 +38,6 @@ export interface Chat {
 }
 
 export interface Words {
+  type: 'words';
   words: string[];
 }
