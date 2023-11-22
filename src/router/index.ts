@@ -10,7 +10,4 @@ router.use('/words', wordsRouter);
 router.use('/games', gamesRouter);
 router.use('/document', documentRouter);
 
-router.use('/users', usersRouter);
-router.use('/document', documentRouter);
-
 export default router;
