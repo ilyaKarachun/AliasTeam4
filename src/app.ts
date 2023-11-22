@@ -32,11 +32,4 @@ async function startApp() {
   }
 }
 
-import rootWordRecognition from '../src/helpers/rootWordRecognition';
-const word = 'смелость';
-const description = 'осмелиться ';
-console.log(rootWordRecognition(word, description));
-console.log(rootWordRecognition(word, 'осмкл5ился'));
-console.log(rootWordRecognition(word, 'осёл'));
-
 startApp();
