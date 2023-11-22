@@ -1,5 +1,6 @@
 export interface User {
   username: string;
+  email: string;
   password: string;
   statistic?: string[];
   status?: 'active' | 'not active';
