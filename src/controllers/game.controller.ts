@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { gameService } from '../services/game.service';
 
 class GameController {
   gamesConnections: any;
@@ -29,16 +30,14 @@ class GameController {
       });
     });
   };
-}
 
-class GameControllerRegular {
   async createGame(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await userService.getUserById({ id: req.params.userId });
-
-      return res.status(200).json({
-        ...result,
+      const result = await gameService.createGame({
+        userId: req.params.userId,
       });
+
+      return res.status(200).json({ userID: result });
     } catch (e) {
       next(e);
     }

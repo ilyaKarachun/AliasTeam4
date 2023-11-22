@@ -6,10 +6,12 @@ import cors from 'cors';
 import errorHandlerMiddleWare from './middlewares/errorHandler.middleware';
 import { createDatabase, dbName } from './database/database';
 import expressWs from 'express-ws';
+import { mountGameRouter } from './router/games.router';
 
 dotenv.config();
 const app = expressWs(express()).app;
 const port = process.env.PORT || 3000;
+mountGameRouter();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
