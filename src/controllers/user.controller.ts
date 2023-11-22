@@ -65,9 +65,7 @@ class UserController {
   }
   async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
-      let result;
-      // create getUser method
-      // const result = await userService.getUser(req.params.userId);
+      const result = await userService.getUserById(req.params.userId);
 
       return res.status(200).json({
         ...result,
@@ -78,8 +76,7 @@ class UserController {
   }
   async updateStatistics(req: Request, res: Response, next: NextFunction) {
     try {
-      // create updateStatistics method
-      // await userService.updateStatistics(req.body);
+      await userService.updateStatistics(req.body, req.params.userId);
 
       return res.status(200).json({
         message: 'User statistics was updated successfully.',
@@ -90,8 +87,7 @@ class UserController {
   }
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      // create deleteUser method
-      // await userService.deleteUser(req.body.userId);
+      await userService.deleteUser(req.body.userId);
 
       return res.status(204);
     } catch (e) {
