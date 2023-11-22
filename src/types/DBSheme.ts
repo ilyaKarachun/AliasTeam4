@@ -31,3 +31,7 @@ export interface Chat {
     content: string;
   }[];
 }
+
+export interface Words {
+  words: string[];
+}
