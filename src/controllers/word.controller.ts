@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
+import { wordService } from '../services/word.service';
 
 class WordController {
   async addWord(req: Request, res: Response, next: NextFunction) {
@@ -17,8 +18,8 @@ class WordController {
       if (errors.length) {
         throw new ValidationException(400, JSON.stringify(errors));
       }
-      // create addWord() method
-      // await wordService.addWord();
+
+      await wordService.addWord({ word: body.word });
       return res.status(201).json({
         message: 'A new word was added.',
       });
@@ -28,9 +29,7 @@ class WordController {
   }
   async getRandomWord(req: Request, res: Response, next: NextFunction) {
     try {
-      let result;
-      // create getRandomWord() method
-      // const result = await wordService.getRandomWord();
+      const result = await wordService.getRandomWord();
       return res.status(201).json({ word: result });
     } catch (e) {
       return next(e);
@@ -63,8 +62,7 @@ class WordController {
 
   async deleteWord(req: Request, res: Response, next: NextFunction) {
     try {
-      // create deleteWord() method
-      // await wordService.deleteWord(req.params.wordId);
+      await wordService.deleteWord({ id: req.params.wordId });
       return res.status(204);
     } catch (e) {
       return next(e);
