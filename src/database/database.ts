@@ -1,4 +1,5 @@
 import Nano from 'nano';
+import { DOC_TYPES } from '../helpers/contstants';
 
 const dbName: string = process.env.DB_NAME || 'alice';
 
@@ -12,6 +13,20 @@ const createDatabase = async (dbName) => {
   try {
     await nano.db.get(dbName);
     console.log(`Database '${dbName}' already exists.`);
+
+    /**
+     * create user design/view
+     */
+    try {
+      await db.insert({
+        _id: `_design/user`,
+        views: {
+          all: {
+            map: "function(doc){ if (doc.type && doc.type == 'user') { emit(doc.type, doc)}}",
+          },
+        },
+      });
+    } catch (e) {}
   } catch (error) {
     if (isNotFoundError(error)) {
       console.log(`Database '${dbName}' does not exist. Creating...`);
