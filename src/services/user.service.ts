@@ -47,7 +47,7 @@ class UserService {
 
     return {
       user: userData.dto,
-      token: this.tokenService.generateToken(data),
+      token: this.tokenService.generateToken(userData.dto),
     };
   }
 

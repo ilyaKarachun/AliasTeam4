@@ -1,11 +1,15 @@
 import * as jwt from 'jsonwebtoken';
-import { CreateUserDto, UserDto } from '../dto/user.dto';
+import { UserDto } from '../dto/user.dto';
 
 class TokenService {
-  generateToken(tokenData: Omit<CreateUserDto, 'username'>): string {
-    const token = jwt.sign(tokenData, process.env.JWT_SECRET as string, {
-      expiresIn: process.env.JWT_EXPIRATION_TIME,
-    });
+  generateToken(tokenData: UserDto): string {
+    const token = jwt.sign(
+      { user: tokenData },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: process.env.JWT_EXPIRATION_TIME,
+      },
+    );
     return token;
   }
 
