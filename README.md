@@ -677,9 +677,66 @@ Content-Type: application/json
 
 ## Database Schema
 
-- **User Model**: Username, password, stats.
-- **Game Model**: Players, scores, words.
-- **Chat Model**: Messages, timestamps, users.
+#### User Model
+
+| Column name | Data type | Description |
+|------------|------------|------------|
+| _id | string | user ID |
+| type | "user" | type for user doc |
+| username | string | user name |
+| email | string | user email |
+| password | string | account password |
+| statistic | array: string | game ID |
+| status | string | 'active' or 'not active' |
+</br>
+  
+#### Game Model
+
+| Column name | Data type | Description |
+|------------|------------|------------|
+| _id | string | user ID |
+| type | "game" | type for game doc |
+| status | string | 'creating' or 'playing' or 'finished' |
+| team1 | string | team ID |
+| team2 | string | team ID |
+| won | string | team ID that won |
+</br>
+
+#### Team Model
+
+| Column name | Data type | Description |
+|------------|------------|------------|
+| _id | string | team ID |
+| type | "team" | type for team doc |
+| participants | arr: string | users ID |
+| chatId | string | chat ID |
+| words | arr: string | random words |
+| score | arr: object | guessing progress |
+
+**Score object**
+| Column name | Data type | Description |
+|------------|------------|------------|
+| word | string | hidden word |
+| status | string | 'guessed' or 'not guessed' |
+| guessed | string | users ID or 'not' |
+</br>
+
+#### Chat Model
+
+| Column name | Data type | Description |
+|------------|------------|------------|
+| _id | string | chat ID |
+| type | "chat" | type for chat doc |
+| messages | arr: object | messages |
+
+**Messages object**
+| Column name | Data type | Description |
+|------------|------------|------------|
+| timestamp | string | timestamp |
+| sender | string | user ID |
+| type | string | 'description' or 'message' |
+| content | string | message text |
+</br>
 
 ## User Authorization
 

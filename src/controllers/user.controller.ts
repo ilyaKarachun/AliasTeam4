@@ -40,9 +40,9 @@ class UserController {
       const body = req.body;
 
       const errors = validateObject(body, {
-        username: {
+        email: {
+          type: 'email',
           required: true,
-          type: 'string',
         },
         password: {
           type: 'string',
@@ -55,7 +55,7 @@ class UserController {
       }
 
       const result = await userService.login({
-        username: body.username,
+        email: body.email,
         password: body.password,
       });
       return res.status(200).json({ ...result });
@@ -63,6 +63,7 @@ class UserController {
       return next(e);
     }
   }
+
   async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await userService.getUserById({ id: req.params.userId });
@@ -74,6 +75,7 @@ class UserController {
       next(e);
     }
   }
+
   async updateStatistics(req: Request, res: Response, next: NextFunction) {
     try {
       await userService.updateStatistics({
@@ -93,6 +95,15 @@ class UserController {
       await userService.deleteUser({ id: req.body.userId });
 
       return res.status(204).send();
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  async getAll(req, res, next) {
+    try {
+      const result = await userService.getAll();
+      return res.status(200).json({ result });
     } catch (e) {
       return next(e);
     }
