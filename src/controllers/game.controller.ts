@@ -4,11 +4,11 @@ import { gameService } from '../services/game.service';
 class GameController {
   async createGame(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await gameService.createGame({
-        userId: req.params.userId,
-      });
-
-      return res.status(200).json({ userID: result });
+      // const result = await gameService.createGame({
+      //   userId: req.params.userId,
+      // });
+      const result = await gameService.createGame();
+      return res.status(200).json({ ...result });
     } catch (e) {
       next(e);
     }

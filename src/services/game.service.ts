@@ -4,8 +4,10 @@ class GameService {
   //     this.gameRepository = gameRepository;
   //   }
 
-  async createGame({ userId }: { userId: string }) {
+  async createGame() {
     let result = { message: 'we happily came to this place' };
+
+    // { userId }: { userId: string }
 
     // {type: chat, messages [{}]}
     // const chatId = await chatRepository.createChat()
