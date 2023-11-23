@@ -2,35 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { gameService } from '../services/game.service';
 
 class GameController {
-  gamesConnections: any;
-
-  constructor() {
-    this.gamesConnections = {};
-  }
-
-  chat = (ws, req) => {
-    const gameId = req.params.id;
-    const userId = req.query.user;
-
-    if (!this.gamesConnections?.[gameId]) {
-      this.gamesConnections[gameId] = {};
-    }
-    this.gamesConnections[gameId][userId] = ws;
-
-    Object.values(this.gamesConnections[gameId]).forEach((conn) => {
-      (conn as any).send(
-        `User with id ${userId} was connected to game with id ${gameId}`,
-      );
-    });
-
-    ws.on('message', (msg) => {
-      const usersToSend = this.gamesConnections[gameId];
-      Object.values(usersToSend).forEach((conn) => {
-        (conn as any).send(`user-${userId} - ${msg}`);
-      });
-    });
-  };
-
   async createGame(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await gameService.createGame({
@@ -38,6 +9,25 @@ class GameController {
       });
 
       return res.status(200).json({ userID: result });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async getAllGames(req: Request, res: Response, next: NextFunction) {
+    try {
+      // const result = await gameService.getAllGames();
+      // return res.status(200).json({ ...result });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async joinGame(req: Request, res: Response, next: NextFunction) {
+    try {
+      // const result = await gameService.joinGame();
+
+      return res.status(200).json({
+        // message: `You've joined to the team ${result.team}. Your chat id - ${result.chatId}`,
+      });
     } catch (e) {
       next(e);
     }
