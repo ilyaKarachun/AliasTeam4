@@ -12,6 +12,19 @@ const errorHandlerMiddleWare = (error, req, res, next) => {
     });
   }
 
+  if (error && error.statusCode === 409) {
+    if (
+      'reason' in error &&
+      'request' in error &&
+      JSON.parse(error?.request?.data)?.type === 'user' &&
+      error?.reason?.includes('conflict')
+    ) {
+      return res.status(400).json({
+        error: 'User With This Email Already Exists!',
+      });
+    }
+  }
+
   console.error(error);
   return res.status(500).json({
     error: 'Something Went Wrong',
