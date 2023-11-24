@@ -37,9 +37,6 @@ class TokenService {
       return null;
     }
   }
-  get() {
-    return this.userData?.user || null;
-  }
 }
 
 const tokenService = new TokenService();
