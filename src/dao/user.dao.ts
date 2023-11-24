@@ -72,7 +72,6 @@ class UserDao {
     }
 
     if ('statistic' in data) {
-      console.log('data.statistic', data);
       // @ts-expect-error
       updatedUser?.statistic?.push(data.statistic);
     }
