@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
 import { userService } from '../services/user.service';
-import { tokenService } from '../services/token.service';
+import HttpException from '../exceptions/httpException';
 
 class UserController {
   async registration(req, res, next) {
@@ -39,7 +39,6 @@ class UserController {
   async login(req, res, next) {
     try {
       const body = req.body;
-
       const errors = validateObject(body, {
         email: {
           type: 'email',
@@ -65,22 +64,36 @@ class UserController {
     }
   }
 
-  // async getUserById(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const result = await userService.getUserById({ id: req.params.userId });
+  async getUserById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await userService.getUserById({ id: req.params.userId });
+      if (!result) {
+        throw new HttpException(404, 'User Was Not Found!');
+      }
 
-  //     return res.status(200).json({
-  //       ...result,
-  //     });
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
+      return res.status(200).json({
+        ...result,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 
   async updateStatistics(req: Request, res: Response, next: NextFunction) {
     try {
+      const body = req.body;
+      const errors = validateObject(body, {
+        statistic: {
+          type: 'number',
+          required: true,
+        },
+      });
+      if (errors.length) {
+        throw new ValidationException(400, JSON.stringify(errors));
+      }
+
       await userService.updateStatistics({
-        statistic: req.body,
+        statistic: body.statistic,
         id: req.params.userId,
       });
 
@@ -93,7 +106,7 @@ class UserController {
   }
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      await userService.deleteUser({ id: req.body.userId });
+      await userService.deleteUser({ id: req.params.userId });
 
       return res.status(204).send();
     } catch (e) {

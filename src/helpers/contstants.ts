@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 const DOC_TYPES: Record<string, string> = {
   USER: 'user',
 };
@@ -19,4 +21,6 @@ const LEVELS: Record<string, string> = {
   HARD: 'hard',
 };
 
-export { DOC_TYPES, USER_STATUSES, GAME_STATUSES, LEVELS };
+const WORDS_PATH = path.join(__dirname, '../../public/words.xlsx');
+
+export { DOC_TYPES, USER_STATUSES, GAME_STATUSES, LEVELS, WORDS_PATH };
