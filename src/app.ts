@@ -22,9 +22,7 @@ app.get('/', (request: Request, response: Response) => {
   });
 });
 
-app.listen(port, () =>
-  console.log(`Running on port ${port}`),
-);
+app.listen(port, () => console.log(`Running on port ${port}`));
 
 async function startApp() {
   try {
