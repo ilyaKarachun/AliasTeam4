@@ -27,11 +27,23 @@ const createDatabase = async (dbName) => {
         },
       });
     } catch (e) {}
+
+    try {
+      await db.insert({
+        _id: `_design/game`,
+        views: {
+          all: {
+            map: "function(doc){if (doc.type && doc.type == 'game'){emit(doc.type, doc)}}",
+          },
+        },
+      });
+    } catch (e) {}
   } catch (error) {
     if (isNotFoundError(error)) {
-      console.log(`Database '${dbName}' does not exist. Creating...`);
-      await nano.db.create(dbName);
-      console.log(`Database '${dbName}' created successfully.`);
+      // console.log(`Database '${dbName}' does not exist. Creating...`);
+      // await nano.db.create(dbName);
+      // console.log(`Database '${dbName}' created successfully.`);
+      return;
     } else {
       throw error;
     }

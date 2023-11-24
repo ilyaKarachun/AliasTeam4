@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import ValidationException from '../exceptions/validationException';
 import { validateObject } from '../helpers/validation';
 import { userService } from '../services/user.service';
+import { tokenService } from '../services/token.service';
 
 class UserController {
   async registration(req, res, next) {
@@ -64,17 +65,17 @@ class UserController {
     }
   }
 
-  async getUserById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await userService.getUserById({ id: req.params.userId });
+  // async getUserById(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const result = await userService.getUserById({ id: req.params.userId });
 
-      return res.status(200).json({
-        ...result,
-      });
-    } catch (e) {
-      next(e);
-    }
-  }
+  //     return res.status(200).json({
+  //       ...result,
+  //     });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   async updateStatistics(req: Request, res: Response, next: NextFunction) {
     try {

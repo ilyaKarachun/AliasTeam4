@@ -51,19 +51,19 @@ class UserService {
     };
   }
 
-  getUserById({ id }: { id: string }) {
-    let result;
-    /**
-     * add method connect to db
-     */
-    return new UserDto({
-      id: result.id,
-      username: result.username,
-      email: result.email,
-      statistic: result.statistic,
-      status: result.status,
-    });
-  }
+  // getUserById({ id }: { id: string }) {
+  //   let result;
+  //   /**
+  //    * add method connect to db
+  //    */
+  //   return new UserDto({
+  //     id: result.id,
+  //     username: result.username,
+  //     email: result.email,
+  //     statistic: result.statistic,
+  //     status: result.status,
+  //   });
+  // }
 
   updateStatistics({
     statistic,

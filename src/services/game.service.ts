@@ -1,25 +1,42 @@
+import { chatDao } from '../dao/chat.dao';
+import { gameDao } from '../dao/game.dao';
+import { GameDto } from '../dto/game.dto';
+import { UserDto } from '../dto/user.dto';
+import { GAME_STATUSES } from '../helpers/contstants';
+
 class GameService {
-  //   gameRepository: any;
-  //   constructor(gameRepository: any) {
-  //     this.gameRepository = gameRepository;
-  //   }
+  async create(data: UserDto) {
+    const userID = data.id;
 
-  async createGame() {
-    let result = { message: 'we happily came to this place' };
+    const newGame: Omit<GameDto, 'id'> = {
+      status: GAME_STATUSES.CREATING,
+      team_1: [`${userID}`],
+      team_2: [],
+      level: '',
+      chat_id: '',
+      words: [],
+      score: [{ team1: 0, team2: 0 }],
+    };
 
-    // { userId }: { userId: string }
+    const gameMeta = await gameDao.create(newGame);
 
-    // {type: chat, messages [{}]}
-    // const chatId = await chatRepository.createChat()
-
-    // {type: "team", participants: [userId], chatId: chatId, words [], score: []}
-    // const await teamRepository.createTeam(userId);
-
-    // {type: "game", status:"creating", team1: teamID, team2: teamID, won: null}
-    // const result = await gameRepository.createGame(userId)
-
-    return result; // result = gameId
+    return { gameID: gameMeta.id };
   }
+  async getAll() {
+    return gameDao.getAll();
+  }
+  // async join({
+  //   user_id,
+  //   game_id,
+  //   number,
+  // }: {
+  //   user_id: string;
+  //   game_id: string;
+  //   number: number;
+  // }) {
+  //   await gameDao.join({ user_id, game_id, number });
+  //   return;
+  // }
 }
 
 export const gameService = new GameService();

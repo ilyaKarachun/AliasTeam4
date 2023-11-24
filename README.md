@@ -2,7 +2,7 @@
 
 ### Test post and get requests
 
-Plese use this command for starting container:
+Please use this command for starting container:
 
 ```
 docker compose -f docker-compose.dev.yaml up

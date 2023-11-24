@@ -5,11 +5,15 @@ const router = Router();
 
 import gameController from '../controllers/game.controller';
 
-router.get('/', gameController.createGame);
+router.post('/', authMiddleware, gameController.create);
+router.get('/', authMiddleware, gameController.getAll);
 // router.get('/:gameId/chat', authMiddleware, gameController.joinTeamChat);
 // router.get('/:gameId/winner', authMiddleware, gameController.getWinner);
-// router.get('/', authMiddleware, gameController.getAllGames);
-// router.put('/:gameId/join', authMiddleware, gameController.joinGame);
+// router.put(
+//   '/:gameId/join?team=<teamNumber>',
+//   authMiddleware,
+//   gameController.join,
+// );
 // router.delete('/:gameId', authMiddleware, gameController.deleteGame);
 
 export default router;
