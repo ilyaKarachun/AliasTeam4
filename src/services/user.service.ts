@@ -51,37 +51,28 @@ class UserService {
     };
   }
 
-  getUserById({ id }: { id: string }) {
-    let result;
-    /**
-     * add method connect to db
-     */
-    return new UserDto({
-      id: result.id,
-      username: result.username,
-      email: result.email,
-      statistic: result.statistic,
-      status: result.status,
-    });
+  async getUserById({ id }: { id: string }) {
+    const result = await userDao.getById(id);
+    return result?.dto;
   }
 
-  updateStatistics({
+  async updateStatistics({
     statistic,
     id,
   }: {
     statistic: Record<string, any>;
     id: string;
   }) {
-    /**
-     * add method connect to db
-     */
+    const result = await userDao.updateById(id, { statistic });
+    if (!result) {
+      throw new HttpException(404, 'User Was Not Found');
+    }
+
     return;
   }
+
   deleteUser({ id }: { id: string }) {
-    /**
-     * add method connect to db
-     */
-    return;
+    return userDao.deleteById(id);
   }
 
   getAll() {
