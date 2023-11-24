@@ -2,12 +2,14 @@
 
 ### Test post and get requests
 
-Plese use this command for starting container:
+Please use this command for starting container:
+
 ```
 docker compose -f docker-compose.dev.yaml up
 ```
 
 you can create a new document via POSTMAN:
+
 ```
 POST
 http://localhost:5000/api/v1/document/create
@@ -126,7 +128,7 @@ POST /users/login HTTP/1.1
 Content-Type: application/json
 Request Body:
 {
-  "username": "user123",
+  "email": "user123@mail.com",
   "password": "securepassword123",
 }
 ```
@@ -137,7 +139,14 @@ Success Response:
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-  "message": "Login successful. Welcome back!"
+    "user": {
+        "username": "user123",
+        "email": "user123@mail.com",
+        "statistic": [],
+        "status": "not active",
+        "id": "user-user123@mail.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiYWxlc3lhIiwiZW1haWwiOiJhbGVzeWFAbWFpbC5jb20iLCJzdGF0aXN0aWMiOltdLCJzdGF0dXMiOiJub3QgYWN0aXZlIiwiaWQiOiJ1c2VyLWFsZXN5YUBtYWlsLmNvbSJ9LCJpYXQiOjE3MDA3NTAwNzcsImV4cCI6MTcwMDc1NzI3N30.qCXGmfq-oPlLyJ7EucESrRRV_QXRR33rmlchqt4gOMg"
 }
 ```
 
@@ -147,7 +156,7 @@ Client Error:
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 {
-  "error": "Wrong Email Or Password"
+  "error": "Password or Email is not correct!"
 }
 ```
 
@@ -679,39 +688,41 @@ Content-Type: application/json
 
 #### User Model
 
-| Column name | Data type | Description |
-|------------|------------|------------|
-| _id | string | user ID |
-| type | "user" | type for user doc |
-| username | string | user name |
-| email | string | user email |
-| password | string | account password |
-| statistic | array: string | game ID |
-| status | string | 'active' or 'not active' |
+| Column name | Data type     | Description              |
+| ----------- | ------------- | ------------------------ |
+| \_id        | string        | user ID                  |
+| type        | "user"        | type for user doc        |
+| username    | string        | user name                |
+| email       | string        | user email               |
+| password    | string        | account password         |
+| statistic   | array: string | game ID                  |
+| status      | string        | 'active' or 'not active' |
+
 </br>
   
 #### Game Model
 
-| Column name | Data type | Description |
-|------------|------------|------------|
-| _id | string | user ID |
-| type | "game" | type for game doc |
-| status | string | 'creating' or 'playing' or 'finished' |
-| team1 | string | team ID |
-| team2 | string | team ID |
-| won | string | team ID that won |
+| Column name | Data type | Description                           |
+| ----------- | --------- | ------------------------------------- |
+| \_id        | string    | user ID                               |
+| type        | "game"    | type for game doc                     |
+| status      | string    | 'creating' or 'playing' or 'finished' |
+| team1       | string    | team ID                               |
+| team2       | string    | team ID                               |
+| won         | string    | team ID that won                      |
+
 </br>
 
 #### Team Model
 
-| Column name | Data type | Description |
-|------------|------------|------------|
-| _id | string | team ID |
-| type | "team" | type for team doc |
-| participants | arr: string | users ID |
-| chatId | string | chat ID |
-| words | arr: string | random words |
-| score | arr: object | guessing progress |
+| Column name  | Data type   | Description       |
+| ------------ | ----------- | ----------------- |
+| \_id         | string      | team ID           |
+| type         | "team"      | type for team doc |
+| participants | arr: string | users ID          |
+| chatId       | string      | chat ID           |
+| words        | arr: string | random words      |
+| score        | arr: object | guessing progress |
 
 **Score object**
 | Column name | Data type | Description |
@@ -723,11 +734,11 @@ Content-Type: application/json
 
 #### Chat Model
 
-| Column name | Data type | Description |
-|------------|------------|------------|
-| _id | string | chat ID |
-| type | "chat" | type for chat doc |
-| messages | arr: object | messages |
+| Column name | Data type   | Description       |
+| ----------- | ----------- | ----------------- |
+| \_id        | string      | chat ID           |
+| type        | "chat"      | type for chat doc |
+| messages    | arr: object | messages          |
 
 **Messages object**
 | Column name | Data type | Description |
