@@ -40,9 +40,9 @@ const createDatabase = async (dbName) => {
     } catch (e) {}
   } catch (error) {
     if (isNotFoundError(error)) {
-      // console.log(`Database '${dbName}' does not exist. Creating...`);
-      // await nano.db.create(dbName);
-      // console.log(`Database '${dbName}' created successfully.`);
+      console.log(`Database '${dbName}' does not exist. Creating...`);
+      await nano.db.create(dbName);
+      console.log(`Database '${dbName}' created successfully.`);
       return;
     } else {
       throw error;
