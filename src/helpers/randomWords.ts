@@ -1,18 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-// interface WordsDoc {
-//   _id: string;
-//   _rev: string;
-//   type: string;
-//   words: string[];
-// }
-// interface Database extends Array<WordsDoc> {
-//   [index: number]: WordsDoc;
-
-//   [Symbol.iterator](): IterableIterator<WordsDoc>;
-
-//   pop(): WordsDoc | undefined;
-// }
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const randomWords = (arr: any) => {
   const result: string[] = [];

@@ -32,11 +32,14 @@ class GameMechanicsController {
 
   async validateDescription(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: { teamId: string; description: string } = req.body;
-      const hiddenWord = await this.gameMechanicsService.getTeamCurrentWord(
-        body.teamId,
+      const body: { teamId: string; description: string; hiddenWord: string } =
+        req.body;
+
+      const checkingResult = rootWordRecognition(
+        body.hiddenWord,
+        body.description,
       );
-      const checkingResult = rootWordRecognition(hiddenWord, body.description);
+      //front decide by status should it disable the button or not
       res.json({
         status: 'success',
         data: checkingResult,
