@@ -23,4 +23,13 @@ const LEVELS: Record<string, string> = {
 
 const WORDS_PATH = path.join(__dirname, '../../public/words.xlsx');
 
-export { DOC_TYPES, USER_STATUSES, GAME_STATUSES, LEVELS, WORDS_PATH };
+const TEAM_SIZE_LIMIT = 5;
+
+export {
+  DOC_TYPES,
+  USER_STATUSES,
+  GAME_STATUSES,
+  LEVELS,
+  WORDS_PATH,
+  TEAM_SIZE_LIMIT,
+};

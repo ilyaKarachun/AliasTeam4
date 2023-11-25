@@ -298,10 +298,6 @@ Request:
 POST /games HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
-Request Body:
-{
-  user_id: "1"
-}
 ```
 
 Success Response:
@@ -310,7 +306,7 @@ Success Response:
 HTTP/1.1 201 Created
 Content-Type: application/json
 {
-  "message": "Game successfully created."
+    "gameID": "32e19d83ef4ebc938c8249ac05000c02"
 }
 ```
 
@@ -339,40 +335,42 @@ Success Response:
 HTTP/1.1 400 OK
 
 ```
-[
-  {
-    "gameID": "1",
-    "status": "creating",
-    "team1": {
-      "participants": ["1", "2"],
-      "chatID": "123",
-      "words": [],
-      "score": []
+{
+    "0": {
+        "id": "3bf63399c59e0f092ecc814ddb000f63",
+        "status": "creating",
+        "team_1": [
+            "user-alesya@mail.com"
+        ],
+        "team_2": [],
+        "level": "",
+        "chat_id": "",
+        "words": [],
+        "score": [
+            {
+                "team1": 0,
+                "team2": 0
+            }
+        ]
     },
-    "team2": {
-      "participants": [],
-      "chatID": "124",
-      "words": [],
-      "score": []
+    "1": {
+        "id": "e2490cf5a7d827f058fb577b3f000dbe",
+        "status": "creating",
+        "team_1": [
+            "user-user@mail.com"
+        ],
+        "team_2": [],
+        "level": "",
+        "chat_id": "",
+        "words": [],
+        "score": [
+            {
+                "team1": 0,
+                "team2": 0
+            }
+        ]
     }
-  },
-  {
-    "gameID": "2",
-    "status": "playing",
-    "team1": {
-      "participants": ["3", "4", "8"],
-      "chatID": "856",
-      "words": ["potato", "watermelon", "cat"],
-      "score": []
-    },
-    "team2": {
-      "participants": ["10", "21", "14"],
-      "chatID": "858",
-      "words": ["potato", "watermelon", "cat"],
-      "score": []
-    }
-  }
-]
+}
 
 ```
 
@@ -423,17 +421,14 @@ Query Parameters:
 | Parameter | Type   | Description                                 | Required |
 | --------- | ------ | ------------------------------------------- | -------- |
 | `gameId`  | number | The unique identifier of the game to fetch. | Yes      |
+| `team`    | number | Number of the game to join (can be 1 or 2)  | Yes      |
 
 Request:
 
 ```
-PUT /games/:gameId/join HTTP/1.1
+PUT /games/:gameId/join?team=2 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
-Request Body:
-{
-  userId: "23"
-}
 ```
 
 Success Response:
@@ -442,7 +437,7 @@ Success Response:
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-  "message": "Player joined to the game successfully."
+   "message": "User was successfully added to team 2."
 }
 ```
 
