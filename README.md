@@ -414,6 +414,45 @@ Content-Type: application/json
 
 ---
 
+**Get information about the game.**
+
+Query Parameters:
+
+| Parameter | Type   | Description                                 | Required |
+| --------- | ------ | ------------------------------------------- | -------- |
+| `gameId`  | number | The unique identifier of the game to fetch. | Yes      |
+
+Request:
+
+```
+GET /games/:gameId
+ HTTP/1.1
+Authorization: Bearer your_access_token
+```
+
+Success Response:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "message": "Team number ${number} is the winner! Congradulations!!!"
+}
+```
+
+Server Error:
+
+```
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+{
+  "error": "Something Went Wrong"
+}
+```
+
+---
+
 **Join the game.**
 
 Query Parameters:

@@ -88,6 +88,11 @@ class GameService {
 
     return { message: `Team ${number} is full. Please, join another team.` };
   }
+
+  async getGameById(id: string) {
+    const result = await gameDao.getGameById(id);
+    return { game: result?.dto, _rev: result?._rev };
+  }
 }
 
 export const gameService = new GameService();

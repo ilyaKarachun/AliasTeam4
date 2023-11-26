@@ -64,6 +64,20 @@ class GameController {
       next(e);
     }
   }
+
+  async getGameById(req, res, next) {
+    try {
+      const game_id = req.params.gameId;
+
+      const result = await gameService.getGameById(game_id);
+
+      return res.status(200).json({
+        ...result,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new GameController();
