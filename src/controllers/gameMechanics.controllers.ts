@@ -1,29 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import gameMechanicsService from '../services/gameMechanics.service';
 
-// example
-// {
-//   "_id": "a235a6878408bc81acdd82d84d001f1a",
-//   "_rev": "2-0621273a6b9fe50be2fc9155e8160589",
-//   "status": "creating",
-//   "team_1": [
-//     "user-alesya@mail.com"
-//   ],
-//   "team_2": [
-//     "user-user@mail.com"
-//   ],
-//   "level": "easy",
-//   "chat_id": "",
-//   "words": [],
-//   "score": [
-//     {
-//       "team1": 0,
-//       "team2": 0
-//     }
-//   ],
-//   "type": "game"
-// }
-
 class GameMechanicsController {
   async startGame(req: Request, res: Response, next: NextFunction) {
     try {
@@ -40,6 +17,40 @@ class GameMechanicsController {
       // await "set update obj game - push full obj in result.tracker + hiddenWord in result.words"
 
       console.log({ hiddenWord, ...nextTurn });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async pointMessage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { gameId, messageContent } = req.body;
+
+      // const result: any = 'db req' + gameId;
+
+      const marker = gameMechanicsService.hiddenWordRecognition(
+        result.words[result.words.length - 1],
+        messageContent,
+      );
+
+      if (marker) {
+        // await 'set update obj game - push result.score[result.tracker.active_team] +1';
+
+        const hiddenWord = gameMechanicsService.randomWord(
+          result.level,
+          result.words,
+        );
+        const nextTurn = gameMechanicsService.assignTeamAndUserTurn(result);
+
+        // await "set update obj game - push full obj in result.tracker + hiddenWord in result.words"
+        console.log({ hiddenWord, ...nextTurn });
+        return {
+          message: 'word are guessed',
+          details: { hiddenWord: hiddenWord, nextTurn: { ...nextTurn } },
+        };
+      } else {
+        return { message: "word aren't guessed" };
+      }
     } catch (e) {
       next(e);
     }
@@ -65,41 +76,18 @@ class GameMechanicsController {
 
   async validateDescription(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: { teamId: string; description: string; hiddenWord: string } =
-        req.body;
+      const body: { gameId: string; description: string } = req.body;
+
+      // const result = 'get info by id';
 
       const checkingResult = gameMechanicsService.rootWordRecognition(
-        body.hiddenWord,
+        result.words[result.words.length - 1],
         body.description,
       );
-      //front decide by status should it disable the button or not
       res.json({
         status: 'success',
         data: checkingResult,
       });
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async pointMessage(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { gameId, messageContent } = req.body;
-
-      // const result: any = 'db req' + gameId;
-
-      const marker = gameMechanicsService.hiddenWordRecognition(
-        result.words[result.words.length - 1],
-        messageContent,
-      );
-
-      if (marker) {
-        // await 'set update obj game - push result.score[result.tracker.active_team] +1';
-        // call func GameMechanicsController.startGame(this)
-        return { message: 'word are guessed' };
-      } else {
-        return { message: "word aren't guessed" };
-      }
     } catch (e) {
       next(e);
     }
