@@ -436,8 +436,28 @@ Success Response:
 HTTP/1.1 200 OK
 Content-Type: application/json
 
+
 {
-  "message": "Team number ${number} is the winner! Congradulations!!!"
+    "game": {
+        "id": "a235a6878408bc81acdd82d84d001f1a",
+        "status": "creating",
+        "team_1": [
+            "user-alesya@mail.com"
+        ],
+        "team_2": [
+            "user-user@mail.com"
+        ],
+        "level": "",
+        "chat_id": "",
+        "words": [],
+        "score": [
+            {
+                "team1": 0,
+                "team2": 0
+            }
+        ]
+    },
+    "_rev": "2-0621273a6b9fe50be2fc9155e8160589"
 }
 ```
 
