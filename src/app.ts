@@ -11,6 +11,7 @@ dotenv.config();
 const app = expressWs(express()).app;
 const port = process.env.PORT || 3000;
 import { mountGameRouter } from './router/game.router';
+import { handleWebSocketConnection } from './socket/webSocketHandler';
 
 /**
  * Workaround to init router
@@ -33,6 +34,8 @@ app.get('/', (request: Request, response: Response) => {
 });
 
 app.listen(port, () => console.log(`Running on port ${port}`));
+app.ws('/chat/:channel/:userId/:team', handleWebSocketConnection);
+
 
 async function startApp() {
   try {
