@@ -39,7 +39,7 @@ class GameDao {
     const gameData = req?.docs?.[0] as GameTeamData;
     const teamToUpdate = number == 1 ? 'team_1' : 'team_2';
 
-    let updatedGame = { ...gameData };
+    const updatedGame = { ...gameData };
     if (!gameData) {
       return null;
     }
@@ -91,6 +91,37 @@ class GameDao {
       };
     }
     return null;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updateGameFields(id: string, fieldsToUpdate: Record<string, any>) {
+    try {
+      const gameData = await this.getGameById(id);
+
+      if (!gameData) {
+        throw new Error('Game not found');
+      }
+
+      for (const field in fieldsToUpdate) {
+        if (field in fieldsToUpdate) {
+          gameData.dto[field] = fieldsToUpdate[field];
+        }
+      }
+
+      const result = await db.insert({
+        ...gameData.dto,
+        _rev: gameData._rev,
+      });
+
+      if (result.ok) {
+        return true;
+      } else {
+        throw new Error('Error updating game fields');
+      }
+    } catch (error) {
+      console.error('Error updating game fields:', error);
+      return false;
+    }
   }
 }
 

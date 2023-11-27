@@ -1,5 +1,9 @@
 import { ChatService } from './chat.service';
 import { GAME_PLAYERS_LIMIT } from '../helpers/contstants';
+import { GameDao } from '../dao/game.dao';
+import gameMechanicsService from './gameMechanics.service';
+
+const gameDAO = new GameDao();
 
 const words = ['hi', 'bye', 'car'];
 
@@ -112,7 +116,17 @@ class GameProcess {
     this.startRound();
   }
 
-  startRound() {
+  async getGameInfoFromDB(gameId: string) {
+    try {
+      const gameInfo = await gameDAO.getGameById(gameId);
+      return gameInfo;
+    } catch (error) {
+      console.error('Error while fetching game info from the database:', error);
+      return null;
+    }
+  }
+
+  async startRound() {
     this.currentRound += 1;
 
     // first or second team
@@ -124,13 +138,21 @@ class GameProcess {
     // calculate leading player
     const leadingPlayerIdx =
       Math.floor(this.currentRound / 2) % teamIdsList.length;
+    // get game result
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gameInfo: any = await this.getGameInfoFromDB(gameId);
 
+    this.roundData.word = gameMechanicsService.randomWord(
+      gameInfo.level,
+      gameInfo.words,
+    );
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
     this.roundData.turn = teamTurn as 'team_1' | 'team_2';
     this.roundData.word = words[Math.floor(Math.random() * words.length)];
 
-    this.notifyAllMembers(
+    // set new word in gameDB words array
+    const sendNewWordInDB = await this.notifyAllMembers(
       `ROUND ${this.currentRound}. Score: team_1: ${this.score.team_1} | team_2: ${this.score.team_2}`,
     );
     this.sendWordToLeadingPlayer();
