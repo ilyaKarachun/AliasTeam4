@@ -6,7 +6,7 @@ class GameMechanicsController {
     try {
       const { gameId } = req.params;
 
-      // const result: any = 'from db answ by game id' + gameId;
+      const result: any = 'from db answ by game id' + gameId;
 
       const hiddenWord = gameMechanicsService.randomWord(
         result.level,
@@ -27,7 +27,7 @@ class GameMechanicsController {
     try {
       const { gameId, messageContent } = req.body;
 
-      // const result: any = 'db req' + gameId;
+      const result: any = 'db req' + gameId;
 
       const marker = gameMechanicsService.hiddenWordRecognition(
         result.words[result.words.length - 1],
@@ -50,7 +50,7 @@ class GameMechanicsController {
   async newWord(req: Request, res: Response, next: NextFunction) {
     try {
       const { gameId } = req.params;
-      // const result:any = "db req with level diff" + gameId
+      const result: any = 'db req with level diff' + gameId;
 
       const newHiddenWord = gameMechanicsService.randomWord(
         result.level,
@@ -69,12 +69,9 @@ class GameMechanicsController {
     try {
       const body: { gameId: string; description: string } = req.body;
 
-      // const result = 'get info by id';
+      const result = 'get info by id';
 
-      const checkingResult = gameMechanicsService.rootWordRecognition(
-        result.words[result.words.length - 1],
-        body.description,
-      );
+      const checkingResult = '';
       res.json({
         status: 'success',
         data: checkingResult,

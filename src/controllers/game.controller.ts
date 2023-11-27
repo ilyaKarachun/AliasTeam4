@@ -7,28 +7,27 @@ class GameController {
     this.gamesConnections = {};
   }
 
-  chat = (ws, req) => {
-    const gameId = req.params.id;
-    const userId = req.query.user;
+  chat = async (ws, req) => {
+    try {
+      const gameId = req.params.id;
+      const userInfo = req?.userInfo?.user;
 
-    if (!this.gamesConnections?.[gameId]) {
-      this.gamesConnections[gameId] = {};
+      if (!gameId) {
+        ws.send('System: game id was not provided!');
+        ws.close();
+        ws.terminate();
+        return;
+      }
+
+      await gameService.establishGameConnection(userInfo, gameId, ws);
+    } catch (e) {
+      console.log('e', e);
+      ws.send(`${e}`);
+      ws.close();
+      ws.terminate();
     }
-    this.gamesConnections[gameId][userId] = ws;
-
-    Object.values(this.gamesConnections[gameId]).forEach((conn) => {
-      (conn as any).send(
-        `User with id ${userId} was connected to game with id ${gameId}`,
-      );
-    });
-
-    ws.on('message', (msg) => {
-      const usersToSend = this.gamesConnections[gameId];
-      Object.values(usersToSend).forEach((conn) => {
-        (conn as any).send(`user-${userId} - ${msg}`);
-      });
-    });
   };
+
   async create(req, res, next) {
     try {
       const result = await gameService.create(req.userInfo.user);
@@ -37,6 +36,7 @@ class GameController {
       next(e);
     }
   }
+
   async getAll(req, res, next) {
     try {
       const result = await gameService.getAll();
