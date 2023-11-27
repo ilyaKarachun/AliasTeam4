@@ -16,6 +16,7 @@ class GameMechanicsController {
 
       // await "set update obj game - push full obj in result.tracker + hiddenWord in result.words"
 
+      // start timer func
       console.log({ hiddenWord, ...nextTurn });
     } catch (e) {
       next(e);
@@ -36,18 +37,8 @@ class GameMechanicsController {
       if (marker) {
         // await 'set update obj game - push result.score[result.tracker.active_team] +1';
 
-        const hiddenWord = gameMechanicsService.randomWord(
-          result.level,
-          result.words,
-        );
-        const nextTurn = gameMechanicsService.assignTeamAndUserTurn(result);
-
-        // await "set update obj game - push full obj in result.tracker + hiddenWord in result.words"
-        console.log({ hiddenWord, ...nextTurn });
-        return {
-          message: 'word are guessed',
-          details: { hiddenWord: hiddenWord, nextTurn: { ...nextTurn } },
-        };
+        // await "set update obj game - push full obj hiddenWord in result.words"
+        return { message: 'word are guessed' };
       } else {
         return { message: "word aren't guessed" };
       }
