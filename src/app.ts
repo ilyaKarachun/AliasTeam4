@@ -10,7 +10,7 @@ import expressWs from 'express-ws';
 dotenv.config();
 const app = expressWs(express()).app;
 const port = process.env.PORT || 3000;
-import { mountGameRouter } from './router/game.router';
+import { mountGameRouter } from './router/games.router';
 
 /**
  * Workaround to init router
