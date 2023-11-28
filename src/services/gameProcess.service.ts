@@ -201,6 +201,10 @@ class GameProcess {
         gameInfo!.dto.level,
         gameInfo!.dto.words,
       );
+      // set new word in gameDB words array
+      await gameDao.updateGameFields(this.gameId, {
+        words: [...gameInfo!.dto.words, this.roundData.word],
+      });
 
       this.sendWordToLeadingPlayer();
       this.notifyUsersAboutTurn();
