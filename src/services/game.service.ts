@@ -83,7 +83,14 @@ class GameService {
   }
 
   async getAll() {
-    return gameDao.getAll();
+    let games: GameDto[] = [];
+    const result = await gameDao.getAll();
+    for (let game of result) {
+      if (game.status === 'playing' || game.status === 'creating') {
+        games.push(game);
+      }
+    }
+    return games;
   }
 
   async join({

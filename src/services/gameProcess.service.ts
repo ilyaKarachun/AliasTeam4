@@ -72,6 +72,7 @@ class GameProcess {
     this.disconnectHandler(userId, conn);
     // check whether we can start game
     if (!this.gameStarted && (await this.isReadyToStart())) {
+      await gameDao.updateGameFields(this.gameId, { status: 'playing' });
       this.startGame();
     }
     this.playerMessageHandler(userId, conn);

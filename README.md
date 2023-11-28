@@ -107,14 +107,6 @@ Content-Type: application/json
 }
 ```
 
-Client Error
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Wrong Email Or Password!"
-}
 Server Error:
 
 ```
@@ -215,7 +207,11 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-**???**
+    "username": "user",
+    "email": "user@mail.com",
+    "statistic": [],
+    "status": "not active",
+    "id": "user-user@mail.com"
 }
 
 ```
@@ -944,4 +940,7 @@ Common questions and troubleshooting tips.
 ## Conclusion
 
 Final remarks and encouragement for further exploration.
+
+```
+
 ```
