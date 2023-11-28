@@ -41,7 +41,7 @@ class GameService {
     }
 
     if (!(gameId in this.games)) {
-      this.games[gameId] = new GameProcess();
+      this.games[gameId] = new GameProcess(gameId);
     }
     const gameProcessInstance = this.games[gameId];
     const userTeam = game.game.team_1.includes(user.id) ? 'team_1' : 'team_2';

@@ -25,8 +25,9 @@ class GameProcess {
   currentRound: number;
   roundDuration: number;
   roundData: Round;
+  gameId: string;
 
-  constructor() {
+  constructor(gameId: string) {
     this.rounds = 4;
     this.teamConnections = {
       team_1: {},
@@ -48,6 +49,8 @@ class GameProcess {
       turn: null,
       word: null,
     };
+
+    this.gameId = gameId;
   }
 
   /**
@@ -141,7 +144,7 @@ class GameProcess {
 
     // get game result for gameMechanicsService.randomWord
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const gameInfo = await this.getGameInfoFromDB(gameId);
+    const gameInfo = await this.getGameInfoFromDB(this.gameId);
 
     if (gameInfo) {
       this.roundData.word = gameMechanicsService.randomWord(
@@ -150,7 +153,7 @@ class GameProcess {
       );
 
       // set new word in gameDB words array
-      await gameDAO.updateGameFields(gameId, {
+      await gameDAO.updateGameFields(this.gameId, {
         words: [...gameInfo.dto.words, this.roundData.word],
       });
     }
