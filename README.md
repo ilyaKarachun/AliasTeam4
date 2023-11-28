@@ -1,26 +1,35 @@
 # Node.js-Based Game "Alias" with Chat and Word Checking
 
-### Test post and get requests
+## Content:
 
-Please use this command for starting container:
-
-```
-docker compose -f docker-compose.dev.yaml up
-```
-
-you can create a new document via POSTMAN:
-
-```
-POST
-http://localhost:5000/api/v1/document/create
-```
-
-you can get all documents via POSTMAN:
-
-```
-GET
-http://localhost:5000/api/v1/document/alldata
-```
+- [Overview](#overview)
+- [Game Description](#game-description)
+  - [Objective](#objective)
+  - [Turns](#turns)
+  - [Scoring](#scoring)
+  - [End Game](#end-game)
+- [System Requirements](#system-requirements)
+- [Setup and Installation](#setup)
+- [Architecture](#architecture)
+- [Core Modules](#core-modules)
+- [APIs](#apis)
+  - [Endpoint /users](#endpoint-users)
+  - [Endpoint /games](#endpoint-games)
+  - [Socket connection](#socket-connection)
+- [Database Schema](#database-schema)
+  - [User Model](#user-model)
+  - [Game Model](#game-model)
+  - [Team Model](#team-model)
+  - [Chat Model](#chat-model)
+- [User Authorization](#user-authorization)
+  - [JWT Generation](#jwt-generation)
+  - [Token Expiration](#token-expiration)
+  - [Session Validation](#session-validation)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Future Enhancements](#future-enhancements)
+- [FAQ](#faq)
+- [Conclusion](#conclusion-back-to-content)
 
 ## Overview
 
@@ -51,6 +60,7 @@ The game concludes after a predetermined number of rounds, with the highest-scor
 - **Backend**: Node.js
 - **Database**: CouchDB
 - **Language**: TypeScript
+- **Docker**
 
 ## Setup and Installation
 
@@ -467,20 +477,19 @@ Content-Type: application/json
 
 ---
 
-**Go to team chat.**
-
-Query Parameters:
-
-| Parameter | Type   | Description                                 | Required |
-| --------- | ------ | ------------------------------------------- | -------- |
-| `gameId`  | number | The unique identifier of the game to fetch. | Yes      |
+**Validate description of the message.**
 
 Request:
 
 ```
-GET /games/:gameId/chat HTTP/1.1
+PUT /games/game/description HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer your_access_toke
+Authorization: Bearer your_access_token
+Request body:
+{
+   "gameId": "a235a6878408bc81acdd82d84d001f1a",
+   "description": "description provided by iser"
+}
 ```
 
 Success Response:
@@ -489,21 +498,24 @@ Success Response:
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-"message": "Player in the chat."
+   "status": "success",
+   "data":
+    {
+      "message": "Words had checked",
+      "words": [],
+      "wrong": false,
+   },
 }
-
 ```
 
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ---
@@ -539,38 +551,35 @@ Content-Type: application/json
 }
 ```
 
-### Endpoint /words
+### Socket connection
 
-**Get a random word.**
+**Join team chat.**
+To interact with the in-game chat, a WebSocket connection is used. To connect to the socket, use the following URL: ws://localhost:3000/api/v1/games/:gameId/chat
+
+Query Parameters:
+
+| Parameter | Type   | Description                                 | Required |
+| --------- | ------ | ------------------------------------------- | -------- |
+| `gameId`  | number | The unique identifier of the game to fetch. | Yes      |
 
 Request:
 
 ```
-GET /words/randomWord HTTP/1.1
-Authorization: Bearer your_access_token
+/games/:gameId/chat
+Authorization: Bearer your_access_toke
 ```
 
-Success Response:
+Success:
 
 ```
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-   "word": "potato"
-}
+Connected to ws://localhost:3000/api/v1/games/f634d94e41daee335b4ace6cc4000999/chat
+Welcome to the game! You are team_1 member
 ```
 
-Server Error:
+Error:
 
 ```
-
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-"error": "Something Went Wrong"
-}
-
+Disconnected from ws://localhost:3000/api/v1/games/:gameId/chat
 ```
 
 ## Database Schema
@@ -674,10 +683,6 @@ Suggestions for additional features or improvements.
 
 Common questions and troubleshooting tips.
 
-## Conclusion
+## Conclusion [(Back to content)](#content)
 
 Final remarks and encouragement for further exploration.
-
-```
-
-```
