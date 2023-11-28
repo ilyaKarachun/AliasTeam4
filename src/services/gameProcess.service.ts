@@ -1,4 +1,6 @@
 import { ChatService } from './chat.service';
+import gameMechanicsService from './gameMechanics.service';
+import { userDao } from '../dao/user.dao';
 import { gameDao } from '../dao/game.dao';
 
 const words = ['hi', 'bye', 'car'];
@@ -21,7 +23,6 @@ class GameProcess {
   currentRound: number;
   roundDuration: number;
   roundData: Round;
-
   gameId: string;
 
   constructor(gameId: string) {
@@ -47,6 +48,8 @@ class GameProcess {
       turn: null,
       word: null,
     };
+
+    this.gameId = gameId;
   }
 
   /**
@@ -106,9 +109,16 @@ class GameProcess {
     });
   }
 
-  checkWord(word: string, userId: string) {
-    if (this.roundData.word === word) {
-      this.guessWordHandler(userId);
+  checkWord(message: string, userId: string) {
+    if (this.roundData.word) {
+      const isGuessed = gameMechanicsService.hiddenWordRecognition(
+        this.roundData.word,
+        message,
+      );
+
+      if (isGuessed) {
+        this.guessWordHandler(userId);
+      }
     }
   }
 
@@ -120,7 +130,17 @@ class GameProcess {
     this.startRound();
   }
 
-  startRound() {
+  async getGameInfoFromDB(gameId: string) {
+    try {
+      const gameInfo = await gameDao.getGameById(gameId);
+      return gameInfo;
+    } catch (error) {
+      console.error('Error while fetching game info from the database:', error);
+      return null;
+    }
+  }
+
+  async startRound() {
     this.currentRound += 1;
 
     // first or second team
@@ -132,6 +152,22 @@ class GameProcess {
     // calculate leading player
     const leadingPlayerIdx =
       Math.floor(this.currentRound / 2) % teamIdsList.length;
+
+    // get game result for gameMechanicsService.randomWord
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gameInfo = await this.getGameInfoFromDB(this.gameId);
+
+    if (gameInfo) {
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo.dto.level,
+        gameInfo.dto.words,
+      );
+
+      // set new word in gameDB words array
+      await gameDao.updateGameFields(this.gameId, {
+        words: [...gameInfo.dto.words, this.roundData.word],
+      });
+    }
 
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
@@ -158,14 +194,36 @@ class GameProcess {
     }
   }
 
-  endRound() {
+  async endRound() {
     if (this.currentRound < this.rounds) {
       this.score[this.roundData.turn as string] += this.roundData.score;
       this.roundData.score = 0;
       this.startRound();
     } else {
-      const winner =
-        this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      let winner;
+
+      if (this.score.team_1 === this.score.team_2) {
+        winner = 'peace, friendship, chewing gum - dead heat';
+      } else {
+        winner = this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      }
+
+      await gameDao.updateGameFields(this.gameId, {
+        won: winner,
+        status: 'finished',
+      });
+
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      const allTeamMembers = (gameInfo?.dto.team_1 || []).concat(
+        gameInfo?.dto.team_2 || [],
+      );
+
+      await Promise.all(
+        allTeamMembers.map(async (el) => {
+          await userDao.updateById(el, { status: 'not active' });
+        }),
+      );
+
       this.notifyAllMembers(
         `${winner} win! They have ${this.score[winner]} scores!`,
       );

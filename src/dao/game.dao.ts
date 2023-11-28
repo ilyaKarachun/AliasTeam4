@@ -40,7 +40,7 @@ class GameDao {
     const gameData = req?.docs?.[0] as GameTeamData;
     const teamToUpdate = number == 1 ? 'team_1' : 'team_2';
 
-    let updatedGame = { ...gameData };
+    const updatedGame = { ...gameData };
     if (!gameData) {
       return null;
     }
