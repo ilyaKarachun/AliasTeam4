@@ -92,6 +92,7 @@ Outline of the server setup, API endpoints, and database schema.
 
 ### Endpoint /users
 
+<details>
 **Register a new user account.**
 
 Request:
@@ -292,8 +293,11 @@ Content-Type: application/json
 }
 ```
 
+</details>
+
 ### Endpoint /games
 
+<details>
 **Create a new game.**
 
 Request:
@@ -551,8 +555,11 @@ Content-Type: application/json
 }
 ```
 
+</details>
+
 ### Socket connection
 
+<details>
 **Join team chat.**
 To interact with the in-game chat, a WebSocket connection is used. To connect to the socket, use the following URL: ws://localhost:3000/api/v1/games/:gameId/chat
 
@@ -581,6 +588,8 @@ Error:
 ```
 Disconnected from ws://localhost:3000/api/v1/games/:gameId/chat
 ```
+
+</details>
 
 ## Database Schema
 
