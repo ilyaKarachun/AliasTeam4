@@ -94,7 +94,19 @@ class GameProcess {
             userId,
           )
         ) {
-          this.notifyAllMembers(`<<${userId}>>: ${msg}`);
+          let validMessage = true;
+          if (userId === this.roundData.leadingPlayerId) {
+            validMessage = !gameMechanicsService.rootWordRecognition(
+              this.roundData.word || '',
+              msg,
+            ).wrong;
+          }
+
+          if (validMessage) {
+            this.notifyAllMembers(`<<${userId}>>: ${msg}`);
+          } else {
+            conn.send('Do not use similar words in your description!');
+          }
 
           // check word if author is not leading player
           if (userId !== this.roundData.leadingPlayerId) {
@@ -172,7 +184,6 @@ class GameProcess {
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
     this.roundData.turn = teamTurn as 'team_1' | 'team_2';
-    this.roundData.word = words[Math.floor(Math.random() * words.length)];
 
     this.notifyAllMembers(
       `ROUND ${this.currentRound}. Score: team_1: ${this.score.team_1} | team_2: ${this.score.team_2}`,
@@ -183,11 +194,13 @@ class GameProcess {
     setTimeout(() => this.endRound(), this.roundDuration);
   }
 
-  makeTurn() {
+  async makeTurn() {
     if (this.roundData.turn) {
-      const teamToPlay = this.teamConnections[this.roundData.turn];
-      const teamIdsList = Object.keys(teamToPlay);
-      this.roundData.word = words[Math.floor(Math.random() * words.length)];
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo!.dto.level,
+        gameInfo!.dto.words,
+      );
 
       this.sendWordToLeadingPlayer();
       this.notifyUsersAboutTurn();
