@@ -2,7 +2,7 @@
 import { ExcelReaderService } from './excelReader.service';
 import natural from 'natural';
 
-const stemmer = natural.PorterStemmerRu;
+const stemmer = natural.PorterStemmer;
 
 const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
