@@ -2,8 +2,10 @@ import { ChatService } from './chat.service';
 import { GAME_PLAYERS_LIMIT } from '../helpers/contstants';
 import { GameDao } from '../dao/game.dao';
 import gameMechanicsService from './gameMechanics.service';
+import { UserDao } from '../dao/user.dao';
 
 const gameDAO = new GameDao();
+const userDAO = new UserDao();
 
 const words = ['hi', 'bye', 'car'];
 
@@ -105,9 +107,16 @@ class GameProcess {
     });
   }
 
-  checkWord(word: string, userId: string) {
-    if (this.roundData.word === word) {
-      this.guessWordHandler(userId);
+  checkWord(message: string, userId: string) {
+    if (this.roundData.word) {
+      const isGuessed = gameMechanicsService.hiddenWordRecognition(
+        this.roundData.word,
+        message,
+      );
+
+      if (isGuessed) {
+        this.guessWordHandler(userId);
+      }
     }
   }
 
@@ -183,14 +192,36 @@ class GameProcess {
     }
   }
 
-  endRound() {
+  async endRound() {
     if (this.currentRound < this.rounds) {
       this.score[this.roundData.turn as string] += this.roundData.score;
       this.roundData.score = 0;
       this.startRound();
     } else {
-      const winner =
-        this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      let winner;
+
+      if (this.score.team_1 === this.score.team_2) {
+        winner = 'peace, friendship, chewing gum - dead heat';
+      } else {
+        winner = this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      }
+
+      await gameDAO.updateGameFields(this.gameId, {
+        won: winner,
+        status: 'finished',
+      });
+
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      const allTeamMembers = (gameInfo?.dto.team_1 || []).concat(
+        gameInfo?.dto.team_2 || [],
+      );
+
+      await Promise.all(
+        allTeamMembers.map(async (el) => {
+          await userDAO.updateById(el, { status: 'not active' });
+        }),
+      );
+
       this.notifyAllMembers(
         `${winner} win! They have ${this.score[winner]} scores!`,
       );

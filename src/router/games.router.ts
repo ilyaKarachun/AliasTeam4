@@ -4,11 +4,20 @@ import authMiddleware from '../middlewares/auth.middleware';
 const router = Router();
 
 import gameController from '../controllers/game.controller';
+import GameMechanicsController from '../controllers/gameMechanics.controllers';
+
+const gameMechanicsController = new GameMechanicsController();
 
 router.post('/', authMiddleware, gameController.create);
 router.get('/', authMiddleware, gameController.getAll);
 router.get('/:gameId', authMiddleware, gameController.getGameById);
 router.put('/:gameId/join', authMiddleware, gameController.join);
+
+router.put(
+  '/game/description',
+  authMiddleware,
+  gameMechanicsController.validateDescription,
+); //body gameId: str, description: string - react on typing
 
 /**
  * CHAT
