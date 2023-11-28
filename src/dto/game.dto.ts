@@ -9,6 +9,11 @@ class GameDto {
   words: string[];
   score: [{ team1: number; team2: number }];
   won?: string;
+  messageHistory: {
+    timestamp: string;
+    sender: string;
+    content: string;
+  }[];
 
   constructor({
     id,
@@ -21,6 +26,7 @@ class GameDto {
     words,
     score,
     won,
+    messageHistory = [],
   }: GameDto) {
     this.id = id;
     this.status = status;
@@ -32,6 +38,7 @@ class GameDto {
     this.words = words;
     this.score = score;
     this.won = won;
+    this.messageHistory = messageHistory;
   }
 }
 
