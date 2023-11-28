@@ -110,13 +110,11 @@ Content-Type: application/json
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ---
@@ -126,58 +124,50 @@ Content-Type: application/json
 Request:
 
 ```
-
 POST /users/login HTTP/1.1
 Content-Type: application/json
 Request Body:
 {
-"email": "user123@mail.com",
-"password": "securepassword123",
+   "email": "user123@mail.com",
+   "password": "securepassword123",
 }
-
 ```
 
 Success Response:
 
 ```
-
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-"user": {
-"username": "user123",
-"email": "user123@mail.com",
-"statistic": [],
-"status": "not active",
-"id": "user-user123@mail.com"
-},
-"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiYWxlc3lhIiwiZW1haWwiOiJhbGVzeWFAbWFpbC5jb20iLCJzdGF0aXN0aWMiOltdLCJzdGF0dXMiOiJub3QgYWN0aXZlIiwiaWQiOiJ1c2VyLWFsZXN5YUBtYWlsLmNvbSJ9LCJpYXQiOjE3MDA3NTAwNzcsImV4cCI6MTcwMDc1NzI3N30.qCXGmfq-oPlLyJ7EucESrRRV_QXRR33rmlchqt4gOMg"
+    "user": {
+        "username": "user",
+        "email": "user@mail.com",
+        "statistic": [],
+        "status": "not active",
+        "id": "user-user@mail.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjExIiwiZW1haWwiOiJ1c2VyMTFAbWFpbC5jb20iLCJzdGF0aXN0aWMiOltdLCJzdGF0dXMiOiJub3QgYWN0aXZlIiwiaWQiOiJ1c2VyLXVzZXIxMUBtYWlsLmNvbSJ9LCJpYXQiOjE3MDExNzQ4MjIsImV4cCI6MTcwMTE4MjAyMn0.snuy70AICIEO-97qgQsRnBjVLcFgzcIrzAjNZRUECaA"
 }
-
 ```
 
 Client Error:
 
 ```
-
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 {
-"error": "Password or Email is not correct!"
+   "error": "Password or Email is not correct!"
 }
-
 ```
 
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ---
@@ -193,16 +183,13 @@ Query Parameters:
 Request:
 
 ```
-
 GET /users/:userId HTTP/1.1
 Authorization: Bearer your_access_token
-
 ```
 
 Success Response:
 
 ```
-
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -213,31 +200,16 @@ Content-Type: application/json
     "status": "not active",
     "id": "user-user@mail.com"
 }
-
-```
-
-Client Error:
-
-```
-
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-"error": "Invalid user id."
-}
-
 ```
 
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ---
@@ -253,40 +225,34 @@ Query Parameters:
 Request:
 
 ```
-
 PUT /users/:userId HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
 Request Body:
 {
-"statistics": **???**
+   "statistics": "f634d94e41daee335b4ace6cc4000999"
 }
-
 ```
 
 Success Response:
 
 ```
-
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-"message": "User statistics was updated successfully."
+   "message": "User statistics was updated successfully."
 }
-
 ```
 
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ---
@@ -296,30 +262,24 @@ Content-Type: application/json
 Request:
 
 ```
-
 DELETE /users/:userId HTTP/1.1
 Authorization: Bearer your_access_token
-
 ```
 
 Success Response:
 
 ```
-
 HTTP/1.1 204 No Content
-
 ```
 
 Server Error:
 
 ```
-
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-"error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
-
 ```
 
 ### Endpoint /games
@@ -343,7 +303,7 @@ Success Response:
 HTTP/1.1 201 Created
 Content-Type: application/json
 {
-"gameID": "32e19d83ef4ebc938c8249ac05000c02"
+   "gameID": "32e19d83ef4ebc938c8249ac05000c02"
 }
 
 ```
@@ -362,7 +322,7 @@ Content-Type: application/json
 
 ---
 
-**Get information about all games.**
+**Get information about all games in status "creating" or "playing".**
 
 Request:
 
@@ -377,7 +337,6 @@ Success Response:
 HTTP/1.1 400 OK
 
 ```
-
 {
 "0": {
 "id": "3bf63399c59e0f092ecc814ddb000f63",
