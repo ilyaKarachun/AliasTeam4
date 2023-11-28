@@ -8,7 +8,7 @@ const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
     const result: string[] = [];
 
-    const validDifficulties = ['Easy', 'Medium', 'Hard'];
+    const validDifficulties = ['easy', 'medium', 'hard'];
     const lowerCaseDifficulty = difficulty.toLowerCase();
 
     if (!validDifficulties.includes(lowerCaseDifficulty)) {
@@ -65,7 +65,10 @@ const gameMechanicsService = {
     return isGuessed;
   },
 
-  rootWordRecognition: (word: string, description: string) => {
+  rootWordRecognition: (
+    word: string,
+    description: string,
+  ): { message: string; words: string[]; wrong: boolean } => {
     const arrDescription = description.split(' ');
     const rootHidden = stemmer.stem(word);
     const wrongWords: string[] = [];
@@ -80,20 +83,20 @@ const gameMechanicsService = {
           rootMatch: true,
         };
       }
-
-      if (wrongWords.length < 0) {
-        return {
-          message: "Please, don't use similar words for your description",
-          words: wrongWords,
-          wrong: true,
-        };
-      } else
-        return {
-          message: 'Words had checked',
-          words: wrongWords,
-          wrong: false,
-        };
     });
+
+    if (wrongWords.length > 0) {
+      return {
+        message: "Please, don't use similar words for your description",
+        words: wrongWords,
+        wrong: true,
+      };
+    } else
+      return {
+        message: 'Words had checked',
+        words: wrongWords,
+        wrong: false,
+      };
   },
 };
 

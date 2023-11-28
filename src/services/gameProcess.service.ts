@@ -115,14 +115,27 @@ class GameProcess {
             userId,
           )
         ) {
-          const timestamp = new Date().toLocaleString();
-          const message = {
-            timestamp: timestamp,
-            sender: userId,
-            content: msg,
-          };
-          this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
-          this.addMessageToHistory(message);
+          let validMessage = true;
+          if (userId === this.roundData.leadingPlayerId) {
+            validMessage = !gameMechanicsService.rootWordRecognition(
+              this.roundData.word || '',
+              msg,
+            ).wrong;
+          }
+
+          if (validMessage) {
+            const timestamp = new Date().toLocaleString();
+            const message = {
+              timestamp: timestamp,
+              sender: userId,
+              content: msg,
+            };
+            this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
+            this.addMessageToHistory(message);
+          } else {
+            conn.send('Do not use similar words in your description!');
+          }
+
           // check word if author is not leading player
           if (userId !== this.roundData.leadingPlayerId) {
             this.checkWord(msg.trim(), userId);
@@ -204,7 +217,6 @@ class GameProcess {
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
     this.roundData.turn = teamTurn as 'team_1' | 'team_2';
-    this.roundData.word = words[Math.floor(Math.random() * words.length)];
 
     this.notifyAllMembers(
       `ROUND ${this.currentRound}. Score: team_1: ${this.score.team_1} | team_2: ${this.score.team_2}`,
@@ -215,11 +227,17 @@ class GameProcess {
     setTimeout(() => this.endRound(), this.roundDuration);
   }
 
-  makeTurn() {
+  async makeTurn() {
     if (this.roundData.turn) {
-      const teamToPlay = this.teamConnections[this.roundData.turn];
-      const teamIdsList = Object.keys(teamToPlay);
-      this.roundData.word = words[Math.floor(Math.random() * words.length)];
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo!.dto.level,
+        gameInfo!.dto.words,
+      );
+      // set new word in gameDB words array
+      await gameDao.updateGameFields(this.gameId, {
+        words: [...gameInfo!.dto.words, this.roundData.word],
+      });
 
       this.sendWordToLeadingPlayer();
       this.notifyUsersAboutTurn();
