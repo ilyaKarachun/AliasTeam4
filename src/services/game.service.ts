@@ -75,6 +75,7 @@ class GameService {
       chat_id: '',
       words: [],
       score: [{ team1: 0, team2: 0 }],
+      messageHistory: [],
     };
 
     const gameMeta = await gameDao.create(newGame);
@@ -155,6 +156,29 @@ class GameService {
   async getGameById(id: string) {
     const result = await gameDao.getGameById(id);
     return { game: result?.dto, _rev: result?._rev };
+  }
+
+  async addMessageToHistory(gameId: string, newMessage: any): Promise<boolean> {
+    try {
+      const updateResult = await gameDao.updateMessageHistory(
+        gameId,
+        newMessage,
+      );
+      return updateResult;
+    } catch (error) {
+      console.error('addMessageToHistory Service error:', error);
+      return false;
+    }
+  }
+
+  async getRecentMessages(gameId: string, count: number): Promise<any[]> {
+    try {
+      const recentMessages = await gameDao.getRecentMessages(gameId);
+      return recentMessages.slice(-count);
+    } catch (error) {
+      console.error('Error getting recent messages in GameProcess:', error);
+      return [];
+    }
   }
 }
 
