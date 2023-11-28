@@ -8,7 +8,7 @@ const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
     const result: string[] = [];
 
-    const validDifficulties = ['easy', 'Medium', 'Hard'];
+    const validDifficulties = ['Easy', 'Medium', 'Hard'];
     const lowerCaseDifficulty = difficulty.toLowerCase();
 
     if (!validDifficulties.includes(lowerCaseDifficulty)) {

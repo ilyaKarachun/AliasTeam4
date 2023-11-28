@@ -4,6 +4,7 @@ import { GameDto } from '../dto/game.dto';
 interface GameTeamData {
   _id: string;
   _rev: string;
+  team_size: number;
   team_1: string[];
   team_2: string[];
 }
@@ -75,7 +76,7 @@ class GameDao {
 
   async getTeams(
     id: string,
-  ): Promise<{ team1: string[]; team2: string[] } | null> {
+  ): Promise<{ team_size: number; team1: string[]; team2: string[] }> {
     const req = await db.find({
       selector: {
         type: 'game',
@@ -84,13 +85,11 @@ class GameDao {
     });
     const gameData = req?.docs?.[0] as GameTeamData;
 
-    if (gameData) {
-      return {
-        team1: gameData.team_1,
-        team2: gameData.team_2,
-      };
-    }
-    return null;
+    return {
+      team_size: gameData.team_size,
+      team1: gameData.team_1,
+      team2: gameData.team_2,
+    };
   }
 }
 

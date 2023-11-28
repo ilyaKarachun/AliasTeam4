@@ -1,5 +1,5 @@
 import { ChatService } from './chat.service';
-import { GAME_PLAYERS_LIMIT } from '../helpers/contstants';
+import { gameDao } from '../dao/game.dao';
 
 const words = ['hi', 'bye', 'car'];
 
@@ -22,7 +22,10 @@ class GameProcess {
   roundDuration: number;
   roundData: Round;
 
-  constructor() {
+  gameId: string;
+
+  constructor(gameId: string) {
+    this.gameId = gameId;
     this.rounds = 4;
     this.teamConnections = {
       team_1: {},
@@ -54,7 +57,11 @@ class GameProcess {
     this.newPlayerHandler(teamNumber, userId, conn);
   }
 
-  newPlayerHandler(teamNumber: 'team_1' | 'team_2', userId: string, conn: any) {
+  async newPlayerHandler(
+    teamNumber: 'team_1' | 'team_2',
+    userId: string,
+    conn: any,
+  ) {
     // welcome message to the player
     conn.send(`Welcome to the game!, You are ${teamNumber} member`);
     // notify all players about new member connection
@@ -64,7 +71,7 @@ class GameProcess {
     // disconnect handler
     this.disconnectHandler(userId, conn);
     // check whether we can start game
-    if (!this.gameStarted && this.isReadyToStart()) {
+    if (!this.gameStarted && (await this.isReadyToStart())) {
       this.startGame();
     }
     this.playerMessageHandler(userId, conn);
@@ -203,11 +210,23 @@ class GameProcess {
   }
 
   /**
+   * check how many users are in the game
+   * @returns number
+   */
+  async checkTeamSize(gameId: string) {
+    const teamData = await gameDao.getTeams(gameId);
+    return teamData.team_size * 2;
+  }
+
+  /**
    * check whether all users connected to the game chat
    * @returns boolean
    */
-  isReadyToStart() {
-    return this.getAllConnections().length === GAME_PLAYERS_LIMIT;
+  async isReadyToStart() {
+    return (
+      this.getAllConnections().length ===
+      (await this.checkTeamSize(this.gameId))
+    );
   }
 
   /**
