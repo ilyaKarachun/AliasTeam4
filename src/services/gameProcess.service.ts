@@ -1,5 +1,6 @@
 import { ChatService } from './chat.service';
 import gameMechanicsService from './gameMechanics.service';
+import { gameService } from './game.service';
 import { userDao } from '../dao/user.dao';
 import { gameDao } from '../dao/game.dao';
 
@@ -24,6 +25,11 @@ class GameProcess {
   roundDuration: number;
   roundData: Round;
   gameId: string;
+  messageHistory: Array<{
+    timestamp: string;
+    sender: string;
+    content: string;
+  }>;
 
   constructor(gameId: string) {
     this.gameId = gameId;
@@ -40,6 +46,7 @@ class GameProcess {
     this.chatService = new ChatService();
     this.currentRound = 0;
     this.roundDuration = 120000;
+    this.messageHistory = [];
 
     this.roundData = {
       score: 0,
@@ -67,6 +74,20 @@ class GameProcess {
   ) {
     // welcome message to the player
     conn.send(`Welcome to the game!, You are ${teamNumber} member`);
+
+    gameService
+      .getRecentMessages(this.gameId, 10)
+      .then((recentMessages) => {
+        recentMessages.forEach((message) => {
+          conn.send(
+            `${message.timestamp} <<${message.sender}>>: ${message.content}`,
+          );
+        });
+      })
+      .catch((error) => {
+        console.error('Error getting recent messages in GameProcess:', error);
+      });
+
     // notify all players about new member connection
     this.notifyAllMembers(
       `System: user ${userId} was connected to the ${teamNumber}`,
@@ -94,8 +115,14 @@ class GameProcess {
             userId,
           )
         ) {
-          this.notifyAllMembers(`<<${userId}>>: ${msg}`);
-
+          const timestamp = new Date().toLocaleString();
+          const message = {
+            timestamp: timestamp,
+            sender: userId,
+            content: msg,
+          };
+          this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
+          this.addMessageToHistory(message);
           // check word if author is not leading player
           if (userId !== this.roundData.leadingPlayerId) {
             this.checkWord(msg.trim(), userId);
@@ -107,6 +134,11 @@ class GameProcess {
         conn.send('It is not your turn yet!');
       }
     });
+  }
+
+  addMessageToHistory(message: any) {
+    this.messageHistory.push(message);
+    gameService.addMessageToHistory(this.gameId, message);
   }
 
   checkWord(message: string, userId: string) {

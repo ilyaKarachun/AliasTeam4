@@ -9,6 +9,13 @@ interface GameTeamData {
   team_2: string[];
 }
 
+interface GameHistoryData {
+  _id: string;
+  _rev: string;
+  type: 'game';
+  messageHistory: any[];
+}
+
 class GameDao {
   async create(data: object) {
     const result = db.insert({
@@ -124,6 +131,64 @@ class GameDao {
     } catch (error) {
       console.error('Error updating game fields:', error);
       return false;
+    }
+  }
+
+  async updateMessageHistory(
+    game_id: string,
+    newMessage: any,
+  ): Promise<boolean> {
+    try {
+      const findResult = await db.find({
+        selector: {
+          type: 'game',
+          _id: { $eq: game_id },
+        },
+      });
+
+      const gameData = findResult?.docs?.[0] as GameHistoryData;
+
+      if (!gameData) {
+        return false;
+      }
+      gameData.messageHistory = gameData.messageHistory || [];
+      gameData.messageHistory.push(newMessage);
+
+      const insertResult = await db.insert(gameData, game_id);
+
+      if (insertResult.ok) {
+        return true;
+      } else {
+        console.error('Failed to update document:', insertResult);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error updating document:', error);
+      return false;
+    }
+  }
+
+  async getRecentMessages(gameId: string): Promise<any[]> {
+    try {
+      const findResult = await db.find({
+        selector: {
+          type: 'game',
+          _id: { $eq: gameId },
+        },
+      });
+
+      const gameData = findResult?.docs?.[0] as GameHistoryData;
+
+      if (!gameData || !gameData.messageHistory) {
+        return [];
+      }
+
+      const recentMessages = gameData.messageHistory;
+
+      return recentMessages;
+    } catch (error) {
+      console.error('Error getting recent messages:', error);
+      return [];
     }
   }
   async delete(id: string) {
