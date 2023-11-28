@@ -4,17 +4,17 @@ import GameMechanicsController from '../controllers/gameMechanics.controllers';
 const router = Router();
 const gameMechanicsController = new GameMechanicsController();
 
-router.put(
-  '/game/mechanic/start/:id',
-  authMiddleware,
-  gameMechanicsController.startGame,
-); //params gameId: str
+// router.put(
+//   '/game/mechanic/start/:id',
+//   authMiddleware,
+//   gameMechanicsController.startGame,
+// ); //params gameId: str
 
-router.put(
-  '/game/mechanic',
-  authMiddleware,
-  gameMechanicsController.pointMessage,
-); //body: gameId: str, messageContent: str
+// router.put(
+//   '/game/mechanic',
+//   authMiddleware,
+//   gameMechanicsController.pointMessage,
+// ); //body: gameId: str, messageContent: str
 
 router.put(
   '/game/mechanic/new-word/:id',

@@ -1,65 +1,49 @@
 import { Request, Response, NextFunction } from 'express';
 import gameMechanicsService from '../services/gameMechanics.service';
+import { GameDao } from '../dao/game.dao';
+const gameDAO = new GameDao();
 
 class GameMechanicsController {
-  async startGame(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { gameId } = req.params;
+  // async pointMessage(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const { gameId, messageContent } = req.body;
 
-      const result: any = 'from db answ by game id' + gameId;
+  //     const result: any = 'db req' + gameId;
 
-      const hiddenWord = gameMechanicsService.randomWord(
-        result.level,
-        result.words,
-      );
-      const nextTurn = gameMechanicsService.assignTeamAndUserTurn(result);
+  //     const marker = gameMechanicsService.hiddenWordRecognition(
+  //       result.words[result.words.length - 1],
+  //       messageContent,
+  //     );
 
-      // await "set update obj game - push full obj in result.tracker + hiddenWord in result.words"
+  //     if (marker) {
+  //       // await 'set update obj game - push result.score[result.tracker.active_team] +1';
 
-      // start timer func
-      console.log({ hiddenWord, ...nextTurn });
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async pointMessage(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { gameId, messageContent } = req.body;
-
-      const result: any = 'db req' + gameId;
-
-      const marker = gameMechanicsService.hiddenWordRecognition(
-        result.words[result.words.length - 1],
-        messageContent,
-      );
-
-      if (marker) {
-        // await 'set update obj game - push result.score[result.tracker.active_team] +1';
-
-        // await "set update obj game - push full obj hiddenWord in result.words"
-        return { message: 'word are guessed' };
-      } else {
-        return { message: "word aren't guessed" };
-      }
-    } catch (e) {
-      next(e);
-    }
-  }
+  //       // await "set update obj game - push full obj hiddenWord in result.words"
+  //       return { message: 'word are guessed' };
+  //     } else {
+  //       return { message: "word aren't guessed" };
+  //     }
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   async newWord(req: Request, res: Response, next: NextFunction) {
     try {
       const { gameId } = req.params;
-      const result: any = 'db req with level diff' + gameId;
+      const gameInfo = await gameDAO.getGameById(gameId);
 
-      const newHiddenWord = gameMechanicsService.randomWord(
-        result.level,
-        result.words,
-      );
+      if (gameInfo) {
+        const newHiddenWord = gameMechanicsService.randomWord(
+          gameInfo.dto.level,
+          gameInfo.dto.words,
+        );
 
-      // await "set update obj game - push new word in result.words"
-
-      return { newHiddenWord: newHiddenWord };
+        await gameDAO.updateGameFields(gameId, {
+          words: [...gameInfo.dto.words, newHiddenWord],
+        });
+        return { newHiddenWord: newHiddenWord };
+      }
     } catch (e) {
       next(e);
     }
@@ -67,11 +51,18 @@ class GameMechanicsController {
 
   async validateDescription(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: { gameId: string; description: string } = req.body;
+      const { gameId, description } = req.body;
 
-      const result = 'get info by id';
+      const gameInfo = await gameDAO.getGameById(gameId);
 
-      const checkingResult = '';
+      let checkingResult;
+
+      if (gameInfo?.dto.words) {
+        checkingResult = gameMechanicsService.rootWordRecognition(
+          gameInfo.dto.words[gameInfo.dto.words.length - 1],
+          description,
+        );
+      }
       res.json({
         status: 'success',
         data: checkingResult,

@@ -102,14 +102,16 @@ class GameDao {
         throw new Error('Game not found');
       }
 
+      const updatedDto = { ...gameData.dto };
+
       for (const field in fieldsToUpdate) {
         if (field in fieldsToUpdate) {
-          gameData.dto[field] = fieldsToUpdate[field];
+          updatedDto[field] = fieldsToUpdate[field];
         }
       }
 
       const result = await db.insert({
-        ...gameData.dto,
+        ...updatedDto,
         _rev: gameData._rev,
       });
 

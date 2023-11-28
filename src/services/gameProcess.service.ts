@@ -138,21 +138,29 @@ class GameProcess {
     // calculate leading player
     const leadingPlayerIdx =
       Math.floor(this.currentRound / 2) % teamIdsList.length;
-    // get game result
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const gameInfo: any = await this.getGameInfoFromDB(gameId);
 
-    this.roundData.word = gameMechanicsService.randomWord(
-      gameInfo.level,
-      gameInfo.words,
-    );
+    // get game result for gameMechanicsService.randomWord
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gameInfo = await this.getGameInfoFromDB(gameId);
+
+    if (gameInfo) {
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo.dto.level,
+        gameInfo.dto.words,
+      );
+
+      // set new word in gameDB words array
+      await gameDAO.updateGameFields(gameId, {
+        words: [...gameInfo.dto.words, this.roundData.word],
+      });
+    }
+
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
     this.roundData.turn = teamTurn as 'team_1' | 'team_2';
     this.roundData.word = words[Math.floor(Math.random() * words.length)];
 
-    // set new word in gameDB words array
-    const sendNewWordInDB = await this.notifyAllMembers(
+    this.notifyAllMembers(
       `ROUND ${this.currentRound}. Score: team_1: ${this.score.team_1} | team_2: ${this.score.team_2}`,
     );
     this.sendWordToLeadingPlayer();
