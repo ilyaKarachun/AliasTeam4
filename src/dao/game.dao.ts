@@ -126,6 +126,14 @@ class GameDao {
       return false;
     }
   }
+  async delete(id: string) {
+    const game = await this.getGameById(id);
+    if (game) {
+      await db.destroy(game.dto.id, game._rev);
+    }
+
+    return;
+  }
 }
 
 const gameDao = new GameDao();
