@@ -84,7 +84,7 @@ class UserController {
       const body = req.body;
       const errors = validateObject(body, {
         statistic: {
-          type: 'number',
+          type: 'string',
           required: true,
         },
       });

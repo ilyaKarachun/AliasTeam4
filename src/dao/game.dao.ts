@@ -4,6 +4,7 @@ import { GameDto } from '../dto/game.dto';
 interface GameTeamData {
   _id: string;
   _rev: string;
+  team_size: number;
   team_1: string[];
   team_2: string[];
 }
@@ -75,7 +76,7 @@ class GameDao {
 
   async getTeams(
     id: string,
-  ): Promise<{ team1: string[]; team2: string[] } | null> {
+  ): Promise<{ team_size: number; team1: string[]; team2: string[] }> {
     const req = await db.find({
       selector: {
         type: 'game',
@@ -84,35 +85,35 @@ class GameDao {
     });
     const gameData = req?.docs?.[0] as GameTeamData;
 
-    if (gameData) {
-      return {
-        team1: gameData.team_1,
-        team2: gameData.team_2,
-      };
-    }
-    return null;
+    return {
+      team_size: gameData.team_size,
+      team1: gameData.team_1,
+      team2: gameData.team_2,
+    };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async updateGameFields(id: string, fieldsToUpdate: Record<string, any>) {
     try {
-      const gameData = await this.getGameById(id);
+      const req = await db.find({
+        selector: {
+          type: 'game',
+          _id: { $eq: id },
+        },
+      });
+
+      const gameData = req?.docs?.[0];
 
       if (!gameData) {
         throw new Error('Game not found');
       }
-
-      const updatedDto = { ...gameData.dto };
-
+      let updatedGame = { ...gameData };
       for (const field in fieldsToUpdate) {
-        if (field in fieldsToUpdate) {
-          updatedDto[field] = fieldsToUpdate[field];
-        }
+        updatedGame[field] = fieldsToUpdate[field];
       }
 
       const result = await db.insert({
-        ...updatedDto,
-        _rev: gameData._rev,
+        ...updatedGame,
       });
 
       if (result.ok) {

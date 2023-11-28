@@ -1,11 +1,7 @@
 import { ChatService } from './chat.service';
-import { GAME_PLAYERS_LIMIT } from '../helpers/contstants';
-import { GameDao } from '../dao/game.dao';
 import gameMechanicsService from './gameMechanics.service';
-import { UserDao } from '../dao/user.dao';
-
-const gameDAO = new GameDao();
-const userDAO = new UserDao();
+import { userDao } from '../dao/user.dao';
+import { gameDao } from '../dao/game.dao';
 
 const words = ['hi', 'bye', 'car'];
 
@@ -30,6 +26,7 @@ class GameProcess {
   gameId: string;
 
   constructor(gameId: string) {
+    this.gameId = gameId;
     this.rounds = 4;
     this.teamConnections = {
       team_1: {},
@@ -63,7 +60,11 @@ class GameProcess {
     this.newPlayerHandler(teamNumber, userId, conn);
   }
 
-  newPlayerHandler(teamNumber: 'team_1' | 'team_2', userId: string, conn: any) {
+  async newPlayerHandler(
+    teamNumber: 'team_1' | 'team_2',
+    userId: string,
+    conn: any,
+  ) {
     // welcome message to the player
     conn.send(`Welcome to the game!, You are ${teamNumber} member`);
     // notify all players about new member connection
@@ -73,7 +74,8 @@ class GameProcess {
     // disconnect handler
     this.disconnectHandler(userId, conn);
     // check whether we can start game
-    if (!this.gameStarted && this.isReadyToStart()) {
+    if (!this.gameStarted && (await this.isReadyToStart())) {
+      await gameDao.updateGameFields(this.gameId, { status: 'playing' });
       this.startGame();
     }
     this.playerMessageHandler(userId, conn);
@@ -130,7 +132,7 @@ class GameProcess {
 
   async getGameInfoFromDB(gameId: string) {
     try {
-      const gameInfo = await gameDAO.getGameById(gameId);
+      const gameInfo = await gameDao.getGameById(gameId);
       return gameInfo;
     } catch (error) {
       console.error('Error while fetching game info from the database:', error);
@@ -162,7 +164,7 @@ class GameProcess {
       );
 
       // set new word in gameDB words array
-      await gameDAO.updateGameFields(this.gameId, {
+      await gameDao.updateGameFields(this.gameId, {
         words: [...gameInfo.dto.words, this.roundData.word],
       });
     }
@@ -206,7 +208,7 @@ class GameProcess {
         winner = this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
       }
 
-      await gameDAO.updateGameFields(this.gameId, {
+      await gameDao.updateGameFields(this.gameId, {
         won: winner,
         status: 'finished',
       });
@@ -218,7 +220,7 @@ class GameProcess {
 
       await Promise.all(
         allTeamMembers.map(async (el) => {
-          await userDAO.updateById(el, { status: 'not active' });
+          await userDao.updateById(el, { status: 'not active' });
         }),
       );
 
@@ -267,11 +269,23 @@ class GameProcess {
   }
 
   /**
+   * check how many users are in the game
+   * @returns number
+   */
+  async checkTeamSize(gameId: string) {
+    const teamData = await gameDao.getTeams(gameId);
+    return teamData.team_size * 2;
+  }
+
+  /**
    * check whether all users connected to the game chat
    * @returns boolean
    */
-  isReadyToStart() {
-    return this.getAllConnections().length === GAME_PLAYERS_LIMIT;
+  async isReadyToStart() {
+    return (
+      this.getAllConnections().length ===
+      (await this.checkTeamSize(this.gameId))
+    );
   }
 
   /**

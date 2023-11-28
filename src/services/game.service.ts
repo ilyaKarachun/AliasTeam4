@@ -1,9 +1,8 @@
-import { chatDao } from '../dao/chat.dao';
 import { gameDao } from '../dao/game.dao';
 import { GameDto } from '../dto/game.dto';
 import { UserDto } from '../dto/user.dto';
 import HttpException from '../exceptions/httpException';
-import { GAME_STATUSES, TEAM_SIZE_LIMIT } from '../helpers/contstants';
+import { GAME_STATUSES, LEVELS } from '../helpers/contstants';
 import GameProcess from './gameProcess.service';
 
 class GameService {
@@ -49,14 +48,30 @@ class GameService {
     gameProcessInstance.insertMember(userTeam, user.id, conn);
   }
 
-  async create(data: UserDto) {
+  async create(data: UserDto, teamSize?: number, level?: string) {
     const userID = data.id;
+
+    const levelInDB: string = level || 'Easy';
+    const lowerCaseDifficulty = levelInDB.toLowerCase();
+
+    if (!Object.values(LEVELS).includes(lowerCaseDifficulty)) {
+      throw new HttpException(400, 'Invalid difficulty level');
+    }
+
+    const teamSizeInDB: number = teamSize || 3;
+    if (teamSizeInDB == 1 || teamSizeInDB > 10) {
+      throw new HttpException(
+        400,
+        'Invalid team size (more than 1, less than 10)!',
+      );
+    }
 
     const newGame: Omit<GameDto, 'id'> = {
       status: GAME_STATUSES.CREATING,
+      team_size: teamSizeInDB,
       team_1: [`${userID}`],
       team_2: [],
-      level: '',
+      level: levelInDB,
       chat_id: '',
       words: [],
       score: [{ team1: 0, team2: 0 }],
@@ -68,7 +83,14 @@ class GameService {
   }
 
   async getAll() {
-    return gameDao.getAll();
+    let games: GameDto[] = [];
+    const result = await gameDao.getAll();
+    for (let game of result) {
+      if (game.status === 'playing' || game.status === 'creating') {
+        games.push(game);
+      }
+    }
+    return games;
   }
 
   async join({
@@ -93,14 +115,16 @@ class GameService {
 
     const team1PlayersAmount = teamsStructure?.team1.length;
     const team2PlayersAmount = teamsStructure?.team2.length;
+    const teamSize = teamsStructure?.team_size;
 
     if (
       team1PlayersAmount !== undefined &&
+      teamSize !== undefined &&
       number == 1 &&
-      team1PlayersAmount < TEAM_SIZE_LIMIT
+      team1PlayersAmount < teamSize
     ) {
       await gameDao.join({ user_id, game_id, number });
-      if (TEAM_SIZE_LIMIT - team1PlayersAmount == 1) {
+      if (teamSize - team1PlayersAmount == 1) {
         return {
           message:
             'User was successfully added to team 1. Now team 1 has full number of players.',
@@ -111,11 +135,12 @@ class GameService {
 
     if (
       team2PlayersAmount !== undefined &&
+      teamSize !== undefined &&
       number == 2 &&
-      team2PlayersAmount < TEAM_SIZE_LIMIT
+      team2PlayersAmount < teamSize
     ) {
       await gameDao.join({ user_id, game_id, number });
-      if (TEAM_SIZE_LIMIT - team2PlayersAmount == 1) {
+      if (teamSize - team2PlayersAmount == 1) {
         return {
           message:
             'User was successfully added to team 2. Now team 2 has full number of players.',

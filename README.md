@@ -113,7 +113,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
 ```
 
@@ -128,8 +128,8 @@ POST /users/login HTTP/1.1
 Content-Type: application/json
 Request Body:
 {
-  "email": "user123@mail.com",
-  "password": "securepassword123",
+   "email": "user123@mail.com",
+   "password": "securepassword123",
 }
 ```
 
@@ -140,13 +140,13 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 {
     "user": {
-        "username": "user123",
-        "email": "user123@mail.com",
+        "username": "user",
+        "email": "user@mail.com",
         "statistic": [],
         "status": "not active",
-        "id": "user-user123@mail.com"
+        "id": "user-user@mail.com"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiYWxlc3lhIiwiZW1haWwiOiJhbGVzeWFAbWFpbC5jb20iLCJzdGF0aXN0aWMiOltdLCJzdGF0dXMiOiJub3QgYWN0aXZlIiwiaWQiOiJ1c2VyLWFsZXN5YUBtYWlsLmNvbSJ9LCJpYXQiOjE3MDA3NTAwNzcsImV4cCI6MTcwMDc1NzI3N30.qCXGmfq-oPlLyJ7EucESrRRV_QXRR33rmlchqt4gOMg"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjExIiwiZW1haWwiOiJ1c2VyMTFAbWFpbC5jb20iLCJzdGF0aXN0aWMiOltdLCJzdGF0dXMiOiJub3QgYWN0aXZlIiwiaWQiOiJ1c2VyLXVzZXIxMUBtYWlsLmNvbSJ9LCJpYXQiOjE3MDExNzQ4MjIsImV4cCI6MTcwMTE4MjAyMn0.snuy70AICIEO-97qgQsRnBjVLcFgzcIrzAjNZRUECaA"
 }
 ```
 
@@ -156,7 +156,7 @@ Client Error:
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 {
-  "error": "Password or Email is not correct!"
+   "error": "Password or Email is not correct!"
 }
 ```
 
@@ -166,7 +166,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
 ```
 
@@ -194,17 +194,11 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  **???**
-}
-```
-
-Client Error:
-
-```
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Invalid user id."
+    "username": "user",
+    "email": "user@mail.com",
+    "statistic": [],
+    "status": "not active",
+    "id": "user-user@mail.com"
 }
 ```
 
@@ -214,7 +208,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
 ```
 
@@ -236,7 +230,7 @@ Content-Type: application/json
 Authorization: Bearer your_access_token
 Request Body:
 {
-  "statistics": **???**
+   "statistics": "f634d94e41daee335b4ace6cc4000999"
 }
 ```
 
@@ -247,7 +241,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "User statistics was updated successfully."
+   "message": "User statistics was updated successfully."
 }
 ```
 
@@ -257,7 +251,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
 ```
 
@@ -284,7 +278,7 @@ Server Error:
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+   "error": "Something Went Wrong"
 }
 ```
 
@@ -295,40 +289,48 @@ Content-Type: application/json
 Request:
 
 ```
+
 POST /games HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 201 Created
 Content-Type: application/json
 {
-    "gameID": "32e19d83ef4ebc938c8249ac05000c02"
+   "gameID": "32e19d83ef4ebc938c8249ac05000c02"
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
 
-**Get information about all games.**
+**Get information about all games in status "creating" or "playing".**
 
 Request:
 
 ```
+
 GET /games HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
@@ -336,40 +338,40 @@ HTTP/1.1 400 OK
 
 ```
 {
-    "0": {
-        "id": "3bf63399c59e0f092ecc814ddb000f63",
-        "status": "creating",
-        "team_1": [
-            "user-alesya@mail.com"
-        ],
-        "team_2": [],
-        "level": "",
-        "chat_id": "",
-        "words": [],
-        "score": [
-            {
-                "team1": 0,
-                "team2": 0
-            }
-        ]
-    },
-    "1": {
-        "id": "e2490cf5a7d827f058fb577b3f000dbe",
-        "status": "creating",
-        "team_1": [
-            "user-user@mail.com"
-        ],
-        "team_2": [],
-        "level": "",
-        "chat_id": "",
-        "words": [],
-        "score": [
-            {
-                "team1": 0,
-                "team2": 0
-            }
-        ]
-    }
+"0": {
+"id": "3bf63399c59e0f092ecc814ddb000f63",
+"status": "creating",
+"team_1": [
+"user-alesya@mail.com"
+],
+"team_2": [],
+"level": "",
+"chat_id": "",
+"words": [],
+"score": [
+{
+"team1": 0,
+"team2": 0
+}
+]
+},
+"1": {
+"id": "e2490cf5a7d827f058fb577b3f000dbe",
+"status": "creating",
+"team_1": [
+"user-user@mail.com"
+],
+"team_2": [],
+"level": "",
+"chat_id": "",
+"words": [],
+"score": [
+{
+"team1": 0,
+"team2": 0
+}
+]
+}
 }
 
 ```
@@ -387,29 +389,35 @@ Query Parameters:
 Request:
 
 ```
+
 GET /games/:gameId/winner HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "Team number ${number} is the winner! Congradulations!!!"
+"message": "Team number ${number} is the winner! Congradulations!!!"
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -425,50 +433,55 @@ Query Parameters:
 Request:
 
 ```
+
 GET /games/:gameId
- HTTP/1.1
+HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
-
 {
-    "game": {
-        "id": "a235a6878408bc81acdd82d84d001f1a",
-        "status": "creating",
-        "team_1": [
-            "user-alesya@mail.com"
-        ],
-        "team_2": [
-            "user-user@mail.com"
-        ],
-        "level": "",
-        "chat_id": "",
-        "words": [],
-        "score": [
-            {
-                "team1": 0,
-                "team2": 0
-            }
-        ]
-    },
-    "_rev": "2-0621273a6b9fe50be2fc9155e8160589"
+"game": {
+"id": "a235a6878408bc81acdd82d84d001f1a",
+"status": "creating",
+"team_1": [
+"user-alesya@mail.com"
+],
+"team_2": [
+"user-user@mail.com"
+],
+"level": "",
+"chat_id": "",
+"words": [],
+"score": [
+{
+"team1": 0,
+"team2": 0
 }
+]
+},
+"\_rev": "2-0621273a6b9fe50be2fc9155e8160589"
+}
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -485,29 +498,35 @@ Query Parameters:
 Request:
 
 ```
+
 PUT /games/:gameId/join?team=2 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-   "message": "User was successfully added to team 2."
+"message": "User was successfully added to team 2."
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -523,33 +542,39 @@ Query Parameters:
 Request:
 
 ```
+
 GET /games/:gameId/chat HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
 Request Body:
 {
-  chatId: "23"
+chatId: "23"
 }
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-  "message": "Player in the chat."
+"message": "Player in the chat."
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -565,24 +590,30 @@ Query Parameters:
 Request:
 
 ```
+
 DELETE /games/:gameId HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 204 No Content
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ### Endpoint /words
@@ -592,43 +623,51 @@ Content-Type: application/json
 Request:
 
 ```
+
 POST /words HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
 Request Body:
 {
-  "word": "newWord"
+"word": "newWord"
 }
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 201 Created
 Content-Type: application/json
 {
-  "message": "A new word was added."
+"message": "A new word was added."
 }
+
 ```
 
 Client Error:
 
 ```
+
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
-  "error": "Provided word already exists in words scope."
+"error": "Provided word already exists in words scope."
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -638,29 +677,35 @@ Content-Type: application/json
 Request:
 
 ```
+
 GET /words/randomWord HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "word": "potato"
+"word": "potato"
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -676,33 +721,39 @@ Query Parameters:
 Request:
 
 ```
+
 PUT /words/:wordId HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer your_access_token
 Request body:
 {
-  "word": "potato"
+"word": "potato"
 }
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-  "message": "Your word was updated successfully."
+"message": "Your word was updated successfully."
 }
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ---
@@ -718,24 +769,30 @@ Query Parameters:
 Request:
 
 ```
+
 DELETE /words/:word HTTP/1.1
 Authorization: Bearer your_access_token
+
 ```
 
 Success Response:
 
 ```
+
 HTTP/1.1 204 No Content
+
 ```
 
 Server Error:
 
 ```
+
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
 {
-  "error": "Something Went Wrong"
+"error": "Something Went Wrong"
 }
+
 ```
 
 ## Database Schema
@@ -753,7 +810,7 @@ Content-Type: application/json
 | status      | string        | 'active' or 'not active' |
 
 </br>
-  
+
 #### Game Model
 
 | Column name | Data type | Description                           |
@@ -842,3 +899,7 @@ Common questions and troubleshooting tips.
 ## Conclusion
 
 Final remarks and encouragement for further exploration.
+
+```
+
+```
