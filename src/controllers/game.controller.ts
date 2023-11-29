@@ -30,7 +30,14 @@ class GameController {
 
   async create(req, res, next) {
     try {
-      const result = await gameService.create(req.userInfo.user);
+      const teamSize: number | undefined = req.body.teamSize;
+      const level: string | undefined = req.body.gameLevel;
+
+      const result = await gameService.create(
+        req.userInfo.user,
+        teamSize,
+        level,
+      );
       return res.status(200).json({ ...result });
     } catch (e) {
       next(e);
@@ -74,6 +81,17 @@ class GameController {
       return res.status(200).json({
         ...result,
       });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async delete(req, res, next) {
+    try {
+      const game_id = req.params.gameId;
+
+      const result = await gameService.delete(game_id);
+
+      return res.status(204).send();
     } catch (e) {
       next(e);
     }

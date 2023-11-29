@@ -16,22 +16,11 @@ const GAME_STATUSES: Record<string, string> = {
 };
 
 const LEVELS: Record<string, string> = {
-  SIMPLE: 'simple',
-  MIDDLE: 'middle',
+  SIMPLE: 'easy',
+  MIDDLE: 'medium',
   HARD: 'hard',
 };
 
 const WORDS_PATH = path.join(__dirname, '../../public/words.xlsx');
 
-const GAME_PLAYERS_LIMIT = 4;
-const TEAM_SIZE_LIMIT = GAME_PLAYERS_LIMIT / 2;
-
-export {
-  DOC_TYPES,
-  USER_STATUSES,
-  GAME_STATUSES,
-  LEVELS,
-  WORDS_PATH,
-  TEAM_SIZE_LIMIT,
-  GAME_PLAYERS_LIMIT,
-};
+export { DOC_TYPES, USER_STATUSES, GAME_STATUSES, LEVELS, WORDS_PATH };

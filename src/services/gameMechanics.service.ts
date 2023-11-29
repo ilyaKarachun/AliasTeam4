@@ -2,13 +2,13 @@
 import { ExcelReaderService } from './excelReader.service';
 import natural from 'natural';
 
-const stemmer = natural.PorterStemmerRu;
+const stemmer = natural.PorterStemmer;
 
 const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
     const result: string[] = [];
 
-    const validDifficulties = ['easy', 'Medium', 'Hard'];
+    const validDifficulties = ['easy', 'medium', 'hard'];
     const lowerCaseDifficulty = difficulty.toLowerCase();
 
     if (!validDifficulties.includes(lowerCaseDifficulty)) {
@@ -49,18 +49,26 @@ const gameMechanicsService = {
     return result[0];
   },
 
-  hiddenWordRecognition: (hidden: string, guess: string) => {
+  hiddenWordRecognition: (
+    hidden: string,
+    guess: string,
+  ): { isGuessed: boolean; word: string } => {
     const hiddenLower = hidden.toLowerCase();
-    const guessLower = guess.toLowerCase();
+    const guessArr = guess.split(' ');
+    let isGuessed;
 
-    if (hiddenLower === guessLower) {
-      return true;
-    } else {
-      return false;
-    }
+    guessArr.map((el) => {
+      el = el.toLocaleLowerCase();
+      isGuessed = hiddenLower === el;
+    });
+
+    return isGuessed;
   },
 
-  rootWordRecognition: (word: string, description: string) => {
+  rootWordRecognition: (
+    word: string,
+    description: string,
+  ): { message: string; words: string[]; wrong: boolean } => {
     const arrDescription = description.split(' ');
     const rootHidden = stemmer.stem(word);
     const wrongWords: string[] = [];
@@ -75,62 +83,21 @@ const gameMechanicsService = {
           rootMatch: true,
         };
       }
-
-      if (wrongWords.length < 0) {
-        return {
-          message: "Please, don't use similar words for your description",
-          words: wrongWords,
-          wrong: true,
-        };
-      } else
-        return {
-          message: 'Words had checked',
-          words: wrongWords,
-          wrong: false,
-        };
     });
-  },
 
-  assignTeamAndUserTurn: (result: any) => {
-    const trackerFull = result.tracker;
-    let prevUserIndex;
-
-    if (Object.keys(trackerFull).length === 0) {
-      trackerFull.active_team = 'team_1';
-      trackerFull.active_user = result.team_1[0];
-      trackerFull.prev_user = null;
-      return trackerFull;
-    } else {
-      trackerFull.active_team =
-        trackerFull.active_team === 'team_1' ? 'team_2' : 'team_1';
-
-      if (trackerFull.prev_user === null) {
-        prevUserIndex = 0;
-      } else {
-        prevUserIndex = result[trackerFull.active_team].indexOf(
-          trackerFull.prev_user,
-        );
-      }
-      trackerFull.prev_user = trackerFull.active_user;
-
-      if (prevUserIndex === result[trackerFull.active_team].length - 1) {
-        trackerFull.active_user = result[trackerFull.active_team][0];
-      } else {
-        trackerFull.active_user =
-          result[trackerFull.active_team][prevUserIndex + 1];
-      }
-
-      return trackerFull;
-    }
+    if (wrongWords.length > 0) {
+      return {
+        message: "Please, don't use similar words for your description",
+        words: wrongWords,
+        wrong: true,
+      };
+    } else
+      return {
+        message: 'Words had checked',
+        words: wrongWords,
+        wrong: false,
+      };
   },
 };
-
-// const result = {
-//   team_1: ['user1', 'user2', 'user3'],
-//   team_2: ['user4', 'user5', 'user6'],
-//   tracker: {},
-// };
-// console.log(gameMechanicsService.assignTeamAndUserTurn(result));
-// localstart: npx ts-node src/services/gameMechanics.service.ts
 
 export default gameMechanicsService;

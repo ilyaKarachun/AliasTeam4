@@ -1,5 +1,8 @@
 import { ChatService } from './chat.service';
-import { GAME_PLAYERS_LIMIT } from '../helpers/contstants';
+import gameMechanicsService from './gameMechanics.service';
+import { gameService } from './game.service';
+import { userDao } from '../dao/user.dao';
+import { gameDao } from '../dao/game.dao';
 
 const words = ['hi', 'bye', 'car'];
 
@@ -21,8 +24,15 @@ class GameProcess {
   currentRound: number;
   roundDuration: number;
   roundData: Round;
+  gameId: string;
+  messageHistory: Array<{
+    timestamp: string;
+    sender: string;
+    content: string;
+  }>;
 
-  constructor() {
+  constructor(gameId: string) {
+    this.gameId = gameId;
     this.rounds = 4;
     this.teamConnections = {
       team_1: {},
@@ -36,6 +46,7 @@ class GameProcess {
     this.chatService = new ChatService();
     this.currentRound = 0;
     this.roundDuration = 120000;
+    this.messageHistory = [];
 
     this.roundData = {
       score: 0,
@@ -44,6 +55,8 @@ class GameProcess {
       turn: null,
       word: null,
     };
+
+    this.gameId = gameId;
   }
 
   /**
@@ -54,9 +67,27 @@ class GameProcess {
     this.newPlayerHandler(teamNumber, userId, conn);
   }
 
-  newPlayerHandler(teamNumber: 'team_1' | 'team_2', userId: string, conn: any) {
+  async newPlayerHandler(
+    teamNumber: 'team_1' | 'team_2',
+    userId: string,
+    conn: any,
+  ) {
     // welcome message to the player
     conn.send(`Welcome to the game!, You are ${teamNumber} member`);
+
+    gameService
+      .getRecentMessages(this.gameId, 10)
+      .then((recentMessages) => {
+        recentMessages.forEach((message) => {
+          conn.send(
+            `${message.timestamp} <<${message.sender}>>: ${message.content}`,
+          );
+        });
+      })
+      .catch((error) => {
+        console.error('Error getting recent messages in GameProcess:', error);
+      });
+
     // notify all players about new member connection
     this.notifyAllMembers(
       `System: user ${userId} was connected to the ${teamNumber}`,
@@ -64,7 +95,8 @@ class GameProcess {
     // disconnect handler
     this.disconnectHandler(userId, conn);
     // check whether we can start game
-    if (!this.gameStarted && this.isReadyToStart()) {
+    if (!this.gameStarted && (await this.isReadyToStart())) {
+      await gameDao.updateGameFields(this.gameId, { status: 'playing' });
       this.startGame();
     }
     this.playerMessageHandler(userId, conn);
@@ -83,7 +115,26 @@ class GameProcess {
             userId,
           )
         ) {
-          this.notifyAllMembers(`<<${userId}>>: ${msg}`);
+          let validMessage = true;
+          if (userId === this.roundData.leadingPlayerId) {
+            validMessage = !gameMechanicsService.rootWordRecognition(
+              this.roundData.word || '',
+              msg,
+            ).wrong;
+          }
+
+          if (validMessage) {
+            const timestamp = new Date().toLocaleString();
+            const message = {
+              timestamp: timestamp,
+              sender: userId,
+              content: msg,
+            };
+            this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
+            this.addMessageToHistory(message);
+          } else {
+            conn.send('Do not use similar words in your description!');
+          }
 
           // check word if author is not leading player
           if (userId !== this.roundData.leadingPlayerId) {
@@ -98,9 +149,21 @@ class GameProcess {
     });
   }
 
-  checkWord(word: string, userId: string) {
-    if (this.roundData.word === word) {
-      this.guessWordHandler(userId);
+  addMessageToHistory(message: any) {
+    this.messageHistory.push(message);
+    gameService.addMessageToHistory(this.gameId, message);
+  }
+
+  checkWord(message: string, userId: string) {
+    if (this.roundData.word) {
+      const isGuessed = gameMechanicsService.hiddenWordRecognition(
+        this.roundData.word,
+        message,
+      );
+
+      if (isGuessed) {
+        this.guessWordHandler(userId);
+      }
     }
   }
 
@@ -112,7 +175,17 @@ class GameProcess {
     this.startRound();
   }
 
-  startRound() {
+  async getGameInfoFromDB(gameId: string) {
+    try {
+      const gameInfo = await gameDao.getGameById(gameId);
+      return gameInfo;
+    } catch (error) {
+      console.error('Error while fetching game info from the database:', error);
+      return null;
+    }
+  }
+
+  async startRound() {
     this.currentRound += 1;
 
     // first or second team
@@ -125,10 +198,25 @@ class GameProcess {
     const leadingPlayerIdx =
       Math.floor(this.currentRound / 2) % teamIdsList.length;
 
+    // get game result for gameMechanicsService.randomWord
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gameInfo = await this.getGameInfoFromDB(this.gameId);
+
+    if (gameInfo) {
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo.dto.level,
+        gameInfo.dto.words,
+      );
+
+      // set new word in gameDB words array
+      await gameDao.updateGameFields(this.gameId, {
+        words: [...gameInfo.dto.words, this.roundData.word],
+      });
+    }
+
     // setup round data
     this.roundData.leadingPlayerId = teamIdsList[leadingPlayerIdx];
     this.roundData.turn = teamTurn as 'team_1' | 'team_2';
-    this.roundData.word = words[Math.floor(Math.random() * words.length)];
 
     this.notifyAllMembers(
       `ROUND ${this.currentRound}. Score: team_1: ${this.score.team_1} | team_2: ${this.score.team_2}`,
@@ -139,25 +227,53 @@ class GameProcess {
     setTimeout(() => this.endRound(), this.roundDuration);
   }
 
-  makeTurn() {
+  async makeTurn() {
     if (this.roundData.turn) {
-      const teamToPlay = this.teamConnections[this.roundData.turn];
-      const teamIdsList = Object.keys(teamToPlay);
-      this.roundData.word = words[Math.floor(Math.random() * words.length)];
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      this.roundData.word = gameMechanicsService.randomWord(
+        gameInfo!.dto.level,
+        gameInfo!.dto.words,
+      );
+      // set new word in gameDB words array
+      await gameDao.updateGameFields(this.gameId, {
+        words: [...gameInfo!.dto.words, this.roundData.word],
+      });
 
       this.sendWordToLeadingPlayer();
       this.notifyUsersAboutTurn();
     }
   }
 
-  endRound() {
+  async endRound() {
     if (this.currentRound < this.rounds) {
       this.score[this.roundData.turn as string] += this.roundData.score;
       this.roundData.score = 0;
       this.startRound();
     } else {
-      const winner =
-        this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      let winner;
+
+      if (this.score.team_1 === this.score.team_2) {
+        winner = 'peace, friendship, chewing gum - dead heat';
+      } else {
+        winner = this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+      }
+
+      await gameDao.updateGameFields(this.gameId, {
+        won: winner,
+        status: 'finished',
+      });
+
+      const gameInfo = await this.getGameInfoFromDB(this.gameId);
+      const allTeamMembers = (gameInfo?.dto.team_1 || []).concat(
+        gameInfo?.dto.team_2 || [],
+      );
+
+      await Promise.all(
+        allTeamMembers.map(async (el) => {
+          await userDao.updateById(el, { status: 'not active' });
+        }),
+      );
+
       this.notifyAllMembers(
         `${winner} win! They have ${this.score[winner]} scores!`,
       );
@@ -203,11 +319,23 @@ class GameProcess {
   }
 
   /**
+   * check how many users are in the game
+   * @returns number
+   */
+  async checkTeamSize(gameId: string) {
+    const teamData = await gameDao.getTeams(gameId);
+    return teamData.team_size * 2;
+  }
+
+  /**
    * check whether all users connected to the game chat
    * @returns boolean
    */
-  isReadyToStart() {
-    return this.getAllConnections().length === GAME_PLAYERS_LIMIT;
+  async isReadyToStart() {
+    return (
+      this.getAllConnections().length ===
+      (await this.checkTeamSize(this.gameId))
+    );
   }
 
   /**
