@@ -12,6 +12,7 @@ router.post('/', authMiddleware, gameController.create);
 router.get('/', authMiddleware, gameController.getAll);
 router.get('/:gameId', authMiddleware, gameController.getGameById);
 router.put('/:gameId/join', authMiddleware, gameController.join);
+router.delete('/:gameId/', authMiddleware, gameController.delete);
 
 router.put(
   '/game/description',

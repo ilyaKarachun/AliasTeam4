@@ -84,14 +84,7 @@ class GameService {
   }
 
   async getAll() {
-    let games: GameDto[] = [];
-    const result = await gameDao.getAll();
-    for (let game of result) {
-      if (game.status === 'playing' || game.status === 'creating') {
-        games.push(game);
-      }
-    }
-    return games;
+    return gameDao.getAll();
   }
 
   async join({
@@ -156,6 +149,10 @@ class GameService {
   async getGameById(id: string) {
     const result = await gameDao.getGameById(id);
     return { game: result?.dto, _rev: result?._rev };
+  }
+
+  async delete(id: string) {
+    return gameDao.delete(id);
   }
 
   async addMessageToHistory(gameId: string, newMessage: any): Promise<boolean> {

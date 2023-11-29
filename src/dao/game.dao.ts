@@ -134,7 +134,10 @@ class GameDao {
     }
   }
 
-  async updateMessageHistory(game_id: string, newMessage: any): Promise<boolean> {
+  async updateMessageHistory(
+    game_id: string,
+    newMessage: any,
+  ): Promise<boolean> {
     try {
       const findResult = await db.find({
         selector: {
@@ -187,6 +190,14 @@ class GameDao {
       console.error('Error getting recent messages:', error);
       return [];
     }
+  }
+  async delete(id: string) {
+    const game = await this.getGameById(id);
+    if (game) {
+      await db.destroy(game.dto.id, game._rev);
+    }
+
+    return;
   }
 }
 

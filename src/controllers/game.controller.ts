@@ -85,6 +85,17 @@ class GameController {
       next(e);
     }
   }
+  async delete(req, res, next) {
+    try {
+      const game_id = req.params.gameId;
+
+      const result = await gameService.delete(game_id);
+
+      return res.status(204).send();
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new GameController();
