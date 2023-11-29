@@ -23,7 +23,6 @@ router.put(
 /**
  * CHAT
  */
-router.use(authMiddleware);
 export const mountGameRouter = () => {
   (router as any).ws('/:id/chat', gameController.chat);
 };

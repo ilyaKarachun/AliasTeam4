@@ -1,6 +1,7 @@
 class GameDto {
   id: string;
   status: string;
+  name: string;
   team_size: number;
   team_1: string[];
   team_2: string[];
@@ -18,6 +19,7 @@ class GameDto {
   constructor({
     id,
     status,
+    name,
     team_size,
     team_1,
     team_2,
@@ -30,6 +32,7 @@ class GameDto {
   }: GameDto) {
     this.id = id;
     this.status = status;
+    this.name = name;
     this.team_size = team_size;
     this.team_1 = team_1;
     this.team_2 = team_2;

@@ -1,9 +1,11 @@
 import { gameDao } from '../dao/game.dao';
+import { userDao } from '../dao/user.dao';
 import { GameDto } from '../dto/game.dto';
 import { UserDto } from '../dto/user.dto';
 import HttpException from '../exceptions/httpException';
 import { GAME_STATUSES, LEVELS } from '../helpers/contstants';
 import GameProcess from './gameProcess.service';
+import { tokenService } from './token.service';
 
 class GameService {
   games: Record<string, GameProcess>;
@@ -12,10 +14,14 @@ class GameService {
     this.games = {};
   }
 
-  async establishGameConnection(user: UserDto, gameId: string, conn: any) {
-    if (!user) {
-      throw new HttpException(400, 'User Does Not Exist!');
+  async establishGameConnection(userToken: string, gameId: string, conn: any) {
+    const tokenData = tokenService.verifyToken(userToken);
+
+    if (!tokenData) {
+      throw new HttpException(400, 'Session Does Not Exist');
     }
+
+    const user = tokenData.user;
 
     // check whether game exists
     const game = await this.getGameById(gameId);
@@ -48,7 +54,7 @@ class GameService {
     gameProcessInstance.insertMember(userTeam, user.id, conn);
   }
 
-  async create(data: UserDto, teamSize?: number, level?: string) {
+  async create(data: UserDto, name: string, teamSize?: number, level?: string) {
     const userID = data.id;
 
     const levelInDB: string = level || 'Easy';
@@ -68,6 +74,7 @@ class GameService {
 
     const newGame: Omit<GameDto, 'id'> = {
       status: GAME_STATUSES.CREATING,
+      name: name,
       team_size: teamSizeInDB,
       team_1: [`${userID}`],
       team_2: [],
@@ -79,6 +86,8 @@ class GameService {
     };
 
     const gameMeta = await gameDao.create(newGame);
+
+    await userDao.updateById(userID, { statistic: gameMeta.id });
 
     return { gameID: gameMeta.id };
   }
@@ -118,6 +127,7 @@ class GameService {
       team1PlayersAmount < teamSize
     ) {
       await gameDao.join({ user_id, game_id, number });
+      await userDao.updateById(user_id, { statistic: game_id });
       if (teamSize - team1PlayersAmount == 1) {
         return {
           message:
@@ -134,6 +144,7 @@ class GameService {
       team2PlayersAmount < teamSize
     ) {
       await gameDao.join({ user_id, game_id, number });
+      await userDao.updateById(user_id, { statistic: game_id });
       if (teamSize - team2PlayersAmount == 1) {
         return {
           message:

@@ -251,11 +251,14 @@ class GameProcess {
       this.startRound();
     } else {
       let winner;
+      let winMessage;
 
       if (this.score.team_1 === this.score.team_2) {
-        winner = 'peace, friendship, chewing gum - dead heat';
+        winner = 'Peace, friendship, chewing gum - dead heat';
+        winMessage = `${winner}! You both have ${this.score.team_1} scores!`;
       } else {
         winner = this.score.team_1 > this.score.team_2 ? 'team_1' : 'team_2';
+        winMessage = `${winner} win! They have ${this.score[winner]} scores!`;
       }
 
       await gameDao.updateGameFields(this.gameId, {
@@ -274,9 +277,7 @@ class GameProcess {
         }),
       );
 
-      this.notifyAllMembers(
-        `${winner} win! They have ${this.score[winner]} scores!`,
-      );
+      this.notifyAllMembers(winMessage);
     }
   }
 
