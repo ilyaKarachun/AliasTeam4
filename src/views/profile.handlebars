@@ -1,0 +1,69 @@
+<div>
+    <p>Your Profile</p>
+
+    {{!-- buttons --}}
+    <div>
+        <button id="deleteButton">Delete</button>
+    </div>
+
+    {{!-- info --}}
+    <div>
+        <div>
+            <div>user name:</div><div id="userName">{{"..."}}</div>
+        </div>
+        <div>
+            <div>user mail:</div><div id="userMail">{{"..."}}</div>
+        </div>
+        <div>
+            <div>user mail:</div><div id="userStatus">{{"..."}}</div>
+        </div>
+        <div>
+            <div>user status:</div><div id="userStatus">{{"..."}}</div>
+        </div>
+        <div>
+            <div>user statistic:</div>
+            <div id="userStatistic">
+                <div>game name:</div><div id="gameName">...</div>
+                <div>level</div><div id="level">...</div>
+                <div>score</div><div id="score">...</div>
+                <div>won</div><div id="won">...</div>
+                {{!-- <button>Open chat history</button> --}}
+
+                {{!-- Dialog window/toggle list --}}
+                {{!-- <div>
+                    <div>Messages</div>
+                    <div>
+                        <div>{{"timestamp"}}</div>
+                        <div>{{"sender"}}</div>
+                        <div>{{"content"}}</div>
+                    </div>
+                </div> --}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  async function fetchDataAndUpdate() {
+    const response = await fetch('/api/user');
+    const userData = await response.json();
+
+    document.getElementById('userName').textContent = userData.name;
+    document.getElementById('userMail').textContent = userData.mail;
+    document.getElementById('userStatus').textContent = userData.status;
+    document.getElementById('gameName').textContent = userData.gameName;
+    document.getElementById('level').textContent = userData.level;
+    document.getElementById('score').textContent = userData.score;
+    document.getElementById('won').textContent = userData.won;
+  }
+
+  document.getElementById('deleteButton').addEventListener('click', async () => {
+
+    const deleteConfirmation = confirm('Are you sure you want to delete your profile?');
+
+    if (deleteConfirmation) {
+    }
+  });
+
+  window.addEventListener('load', fetchDataAndUpdate);
+</script>

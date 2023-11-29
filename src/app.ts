@@ -56,6 +56,12 @@ app.get('/test', (req, res) => {
   });
 });
 
+app.get("/profile", (req, res) => {
+  res.render("profile", {
+    title: "Profile",
+  });
+});
+
 app.get('/chat/:id', (req, res) => {
   res.render('chat', {});
 });
