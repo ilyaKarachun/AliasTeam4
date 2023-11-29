@@ -12,7 +12,7 @@ dotenv.config();
 const app = expressWs(express()).app;
 const port = process.env.PORT || 3000;
 import { mountGameRouter } from './router/games.router';
-import * as path from "path";
+import * as path from 'path';
 
 /**
  * Workaround to init router
@@ -30,24 +30,26 @@ app.use(errorHandlerMiddleWare);
 
 const hbs = create({
   // helpers,
- 
-   // Uses multiple partials dirs, templates in "shared/templates/" are shared
-   // with the client-side of the app (see below).
-   partialsDir: [
-     "shared/templates/",
-     "views/partials/",
-   ],
- });
- app.engine('handlebars', hbs.engine);
- app.set('view engine', 'handlebars');
- app.set("views", path.resolve(__dirname, "./views"));
- 
- 
- app.get("/test", (req, res) => {
-   res.render("home", {
-     title: "Home",
-   });
- });
+
+  // Uses multiple partials dirs, templates in "shared/templates/" are shared
+  // with the client-side of the app (see below).
+  partialsDir: ['shared/templates/', 'views/partials/'],
+});
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+app.set('views', path.resolve(__dirname, './views'));
+
+app.get('/test', (req, res) => {
+  res.render('home', {
+    title: 'Home',
+  });
+});
+
+app.get('/games', (req, res) => {
+  res.render('games', {
+    title: 'Game',
+  });
+});
 
 app.get('/', (request: Request, response: Response) => {
   return response.json({
