@@ -1,3 +1,4 @@
+import HttpException from '../exceptions/httpException';
 import { gameService } from '../services/game.service';
 
 class GameController {
@@ -10,7 +11,11 @@ class GameController {
   chat = async (ws, req) => {
     try {
       const gameId = req.params.id;
-      const userInfo = req?.userInfo?.user;
+      const userToken = req?.query?.token;
+
+      if (!userToken) {
+        throw new HttpException(401, 'You should authorize firstly!');
+      }
 
       if (!gameId) {
         ws.send('System: game id was not provided!');
@@ -19,7 +24,7 @@ class GameController {
         return;
       }
 
-      await gameService.establishGameConnection(userInfo, gameId, ws);
+      await gameService.establishGameConnection(userToken, gameId, ws);
     } catch (e) {
       console.log('e', e);
       ws.send(`${e}`);
