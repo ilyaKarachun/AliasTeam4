@@ -63,6 +63,18 @@ app.get('/chat/:id', (req, res) => {
 app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   const gameInfo = await gameService.getGameById(req.params.id);
 
+  if (!gameInfo.game) {
+    return res.render('404');
+  }
+
+  const isUserInGame =
+    gameInfo?.game?.team_1.includes(req.userInfo.user.id) ||
+    gameInfo?.game?.team_2.includes(req.userInfo.user.id);
+
+  if (isUserInGame) {
+    res.redirect(`/chat/${req.params.id}`);
+  }
+
   return res.render('game-single', {
     gameInfo: gameInfo.game,
   });
