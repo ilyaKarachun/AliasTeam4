@@ -19,8 +19,6 @@
 - [Database Schema](#database-schema)
   - [User Model](#user-model)
   - [Game Model](#game-model)
-  - [Team Model](#team-model)
-  - [Chat Model](#chat-model)
 - [User Authorization](#user-authorization)
   - [JWT Generation](#jwt-generation)
   - [Token Expiration](#token-expiration)
@@ -310,6 +308,7 @@ Content-Type: application/json
 Authorization: Bearer your_access_token
 Request body (optional, default: teamSize - 3, gameLevel - Easy):
 {
+    "name": "Little Dinosaurs",
     "teamSize": 2,
     "gameLevel": "Medium"
 }
@@ -354,6 +353,7 @@ HTTP/1.1 400 OK
   "0": {
     "id": "3bf63399c59e0f092ecc814ddb000f63",
     "status": "creating",
+    "name": "Potatos",
     "team_size": 4,
     "team_1": ["user-alesya@mail.com"],
     "team_2": [],
@@ -370,6 +370,7 @@ HTTP/1.1 400 OK
   "1": {
     "id": "e2490cf5a7d827f058fb577b3f000dbe",
     "status": "creating",
+    "name": "Jezhozwiezi",
     "team_size": 3,
     "team_1": ["user-user@mail.com"],
     "team_2": [],
@@ -415,6 +416,8 @@ Content-Type: application/json
   "game": {
     "id": "a235a6878408bc81acdd82d84d001f1a",
     "status": "creating",
+
+    "name": "Jezhozwiezi",
     "team_size":2,
     "team_1": ["user-alesya@mail.com"],
     "team_2": ["user-user@mail.com"],
@@ -613,51 +616,37 @@ Disconnected from ws://localhost:3000/api/v1/games/:gameId/chat
 
 #### Game Model
 
-| Column name | Data type | Description                           |
-| ----------- | --------- | ------------------------------------- |
-| \_id        | string    | user ID                               |
-| type        | "game"    | type for game doc                     |
-| status      | string    | 'creating' or 'playing' or 'finished' |
-| team1       | string    | team ID                               |
-| team2       | string    | team ID                               |
-| won         | string    | team ID that won                      |
-
-</br>
-
-#### Team Model
-
-| Column name  | Data type   | Description       |
-| ------------ | ----------- | ----------------- |
-| \_id         | string      | team ID           |
-| type         | "team"      | type for team doc |
-| participants | arr: string | users ID          |
-| chatId       | string      | chat ID           |
-| words        | arr: string | random words      |
-| score        | arr: object | guessing progress |
+| Column name    | Data type   | Description                           |
+| -------------- | ----------- | ------------------------------------- |
+| \_id           | string      | user ID                               |
+| type           | "game"      | type for game doc                     |
+| status         | string      | 'creating' or 'playing' or 'finished' |
+| name           | string      | game's name                           |
+| team_size      | number      | amount of participants in team        |
+| team1          | arr: string | user's ID of team 1                   |
+| team2          | arr: string | user's ID of team 2                   |
+| level          | string      | 'Easy' or 'Medium' or 'Hard'          |
+| chat_id        | string      | chat ID                               |
+| words          | arr: string | words that was played in the gane     |
+| score          | object      | score object                          |
+| won            | string      | team ID that won                      |
+| messageHistory | arr: object | meesages in the game chat             |
 
 **Score object**
-| Column name | Data type | Description |
-|------------|------------|------------|
-| word | string | hidden word |
-| status | string | 'guessed' or 'not guessed' |
-| guessed | string | users ID or 'not' |
-</br>
 
-#### Chat Model
-
-| Column name | Data type   | Description       |
-| ----------- | ----------- | ----------------- |
-| \_id        | string      | chat ID           |
-| type        | "chat"      | type for chat doc |
-| messages    | arr: object | messages          |
+| Column name | Data type | Description        |
+| ----------- | --------- | ------------------ |
+| team_1      | number    | score for the game |
+| team_2      | number    | score for the game |
 
 **Messages object**
-| Column name | Data type | Description |
-|------------|------------|------------|
-| timestamp | string | timestamp |
-| sender | string | user ID |
-| type | string | 'description' or 'message' |
-| content | string | message text |
+
+| Column name | Data type | Description  |
+| ----------- | --------- | ------------ |
+| timestamp   | string    | timestamp    |
+| sender      | string    | user ID      |
+| content     | string    | message text |
+
 </br>
 
 ## User Authorization

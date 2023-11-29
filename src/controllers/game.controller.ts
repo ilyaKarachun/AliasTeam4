@@ -1,4 +1,6 @@
 import HttpException from '../exceptions/httpException';
+import ValidationException from '../exceptions/validationException';
+import { validateObject } from '../helpers/validation';
 import { gameService } from '../services/game.service';
 
 class GameController {
@@ -35,13 +37,31 @@ class GameController {
 
   async create(req, res, next) {
     try {
-      const teamSize: number | undefined = req.body.teamSize;
-      const level: string | undefined = req.body.gameLevel;
+      const body = req.body;
+      const errors = validateObject(body, {
+        name: {
+          required: true,
+          type: 'string',
+        },
+        teamSize: {
+          required: false,
+          type: 'number',
+        },
+        level: {
+          type: 'string',
+          required: false,
+        },
+      });
+
+      if (errors.length) {
+        throw new ValidationException(400, JSON.stringify(errors));
+      }
 
       const result = await gameService.create(
         req.userInfo.user,
-        teamSize,
-        level,
+        body.name,
+        body.teamSize,
+        body.level,
       );
       return res.status(200).json({ ...result });
     } catch (e) {
