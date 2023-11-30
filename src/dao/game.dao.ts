@@ -25,9 +25,17 @@ class GameDao {
     return result;
   }
   async getAll() {
-    const req = await db.view<GameDto>('game', 'all');
+    const req = await db.find({
+      selector: {
+        type: 'game',
+      },
+    });
     if (!req) return [];
-    return req.rows.map((game) => new GameDto({ ...game.value, id: game.id }));
+
+    return req.docs.map(
+      // @ts-expect-error
+      (game) => new GameDto({ ...game, id: game._id }),
+    );
   }
   async join({
     user_id,
