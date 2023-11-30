@@ -17,10 +17,9 @@ document
 
     if (deleteConfirmation) {
       try {
-        const response = await fetch(`/users/${userId}`, {
+        const response = await fetch(`api/v1/users/${userId}`, {
           method: 'DELETE',
           headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             Authorization: `Bearer ${accessToken}`,
           },
         });

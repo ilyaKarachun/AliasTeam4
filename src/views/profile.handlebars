@@ -1,13 +1,12 @@
 <div class="profile-info">
-    <div class="profile-row">
-    <p class="profile-title">Your Profile</p>
+    <div class="profile-row-title">
+        <p class="profile-title">Your Profile</p>
 
     {{!-- buttons --}}
         <button id="delete-button-profile">Delete</button>
     </div>
 
     {{!-- info --}}
-    <p>render status: {{renderStatus}}</p>
     <div class="profile-column">
         <div class="profile-row">
             <div>user name:</div><div id="userName">{{data.username}}</div>
@@ -19,21 +18,40 @@
             <div>user status:</div><div id="userStatus">{{data.status}}</div>
         </div>
         <div class="profile-column">
-            <p class="profile-subtitle">user statistic:</p>
+            <p class="profile-subtitle">User statistic:</p>
             {{#each gamesInfo}}
-            <div class="profile-row">
-                <div>game name:</div><div id="gameName{{id}}">{{this.name}}</div>
-            </div>
-            <div class="profile-row">
-                <div>level:</div><div id="level{{id}}">{{this.level}}</div>
-            </div>
-            <div class="profile-row">
-                <div>score:</div><div id="score{{id}}">{{this.score}}</div>
-            </div>
-            <div class="profile-row">
-                <div>won:</div><div id="won{{id}}">{{this.won}}</div>
+            <div class="statistic-profile">
+                <div class="profile-row">
+                    <div>game name:</div><div id="gameName{{this.game}}">{{this.game.name}}</div>
+                </div>
+                <div class="profile-row">
+                    <div>game status:</div><div id="gameName{{this.game}}">{{this.game.status}}</div>
+                </div>
+                <div class="profile-row">
+                    <div>level:</div><div id="level{{this.game}}">{{this.game.level}}</div>
+                </div>
+                <div class="profile-row">
+                    <div>score:</div><div id="score{{this.game}}">
+                        <div class="profile-column">
+                            {{#each this.game.score}}
+                            <div class="profile-row">
+                                <div>team 1: </div><div>{{this.team_1}}</div>
+                            </div>
+                            <div class="profile-row">
+                                <div>team 2: </div><div>{{this.team_2}}</div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-row">
+                    <div>won:</div><div id="won{{this.game}}">{{this.game.won}}</div>
+                </div>
             </div>
             {{/each}}
         </div>
     </div>
 </div>
+
+<script src='../../script/get-cookie.js'></script>
+<script src='../../script/profile.js'></script>

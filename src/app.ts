@@ -84,19 +84,25 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
 app.get('/profile', clientAuthMiddleware, async (req, res) => {
   const data = req.userInfo.user;
   let game;
-  console.log('data: ', data);
+
   if (data.statistic.length > 0) {
-    game = await Promise.all(
+    const gamesInfo = await Promise.all(
       data.statistic.map(async (el) => {
-        return await gameService.getGameById(el);
+        const gameData = await gameService.getGameById(el);
+        return gameData;
       }),
     );
+
+    game = gamesInfo.map((gameData) => ({ game: gameData }));
+  } else {
+    const gameData = await gameService.getGameById('04cdc77de59ce67c67f901c087000d75');
+    game = [gameData];
   }
+
   return res.render('profile', {
-    // title: 'Profile',
-    renderStatus: 'fsdf',
-    // data: data,
-    // game: game,
+    title: 'Profile',
+    data: data,
+    gamesInfo: game,
   });
 });
 
