@@ -1,4 +1,4 @@
-<div>
+<div id="profile-info">
     <p>Your Profile</p>
 
     {{!-- buttons --}}
@@ -42,28 +42,3 @@
         </div>
     </div>
 </div>
-
-<script>
-  async function fetchDataAndUpdate() {
-    const response = await fetch('/api/user');
-    const userData = await response.json();
-
-    document.getElementById('userName').textContent = userData.name;
-    document.getElementById('userMail').textContent = userData.mail;
-    document.getElementById('userStatus').textContent = userData.status;
-    document.getElementById('gameName').textContent = userData.gameName;
-    document.getElementById('level').textContent = userData.level;
-    document.getElementById('score').textContent = userData.score;
-    document.getElementById('won').textContent = userData.won;
-  }
-
-  document.getElementById('deleteButton').addEventListener('click', async () => {
-
-    const deleteConfirmation = confirm('Are you sure you want to delete your profile?');
-
-    if (deleteConfirmation) {
-    }
-  });
-
-  window.addEventListener('load', fetchDataAndUpdate);
-</script>
