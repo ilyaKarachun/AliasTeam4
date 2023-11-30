@@ -34,11 +34,11 @@ app.use(errorHandlerMiddleWare);
 app.use(express.static('public'));
 
 const hbs = create({
-  // helpers,
-
-  // Uses multiple partials dirs, templates in "shared/templates/" are shared
-  // with the client-side of the app (see below).
-  partialsDir: ['shared/templates/', 'views/partials/'],
+  partialsDir: [
+    'shared/templates/',
+    'views/partials/',
+    path.join(__dirname, 'views/partials'),
+  ],
   helpers: {
     ifEquals: function (arg1, arg2, options) {
       return arg1 == arg2 ? options.fn(this) : options.inverse(this);
@@ -55,7 +55,7 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
-app.get('/test', (req, res) => {
+app.get('/', (req, res) => {
   res.render('home', {
     title: 'Home',
   });
@@ -94,6 +94,24 @@ app.get('/games/', clientAuthMiddleware, async (req, res) => {
 
   return res.render('games', {
     games: games,
+  });
+});
+
+app.get('/login', (req, res) => {
+  res.render('login', {
+    title: 'login',
+  });
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', {
+    title: 'Registration',
+  });
+});
+
+app.get('/rules', (req, res) => {
+  res.render('rules', {
+    title: 'Rules',
   });
 });
 
