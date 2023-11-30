@@ -1,8 +1,8 @@
-const getGameButton = document.querySelector('.join-game-button');
+const getGameButtons = document.querySelectorAll('#join-game-button');
 
-const getGame = async () => {
+const getGame = (button) => {
   try {
-    const id = getGameButton.dataset.id;
+    const id = button.dataset.id;
     window.location.href = `/games/${id}`;
   } catch (e) {
     alert(e);
@@ -10,4 +10,6 @@ const getGame = async () => {
   }
 };
 
-getGameButton.addEventListener('click', getGame);
+getGameButtons.forEach((button) => {
+  button.addEventListener('click', () => getGame(button));
+});

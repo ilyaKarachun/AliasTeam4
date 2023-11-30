@@ -39,13 +39,13 @@
 }
 .games-word {
   color: black;
-  margin-bottom: 20px;
 }
 
 .one-game-container {
+  display: flex;
   width: 100%;
-  margin-left: 15px;
-  margin-bottom: 8px;
+
+  margin: 15px;
   transition: transform 0.3s;
   border-radius: 10px;
 }
@@ -54,13 +54,10 @@
   transform: scale(1.03);
 }
 
-h4 {
-  margin-bottom: 10px;
-}
-
 .join-game-button {
   background-color: #80add7;
   color: white;
+  margin-left: 15px;
   padding: 10px;
   border: none;
   border-radius: 5px;
