@@ -1,4 +1,4 @@
-const getGameButtons = document.querySelector('.join-game-button');
+const getGameButton = document.querySelector('.join-game-button');
 
 const getGame = async (e) => {
   try {
@@ -13,7 +13,7 @@ const getGame = async (e) => {
     const res = await getGameRequest.json();
 
     if (getGameRequest.ok) {
-      res.redirect(`/games/${id}`);
+      window.location.href = `/games/${id}`;
     } else {
       throw new Error(res.error);
     }
@@ -23,4 +23,4 @@ const getGame = async (e) => {
   }
 };
 
-getGameButtons.addEventListener('click', getGame);
+getGameButton.addEventListener('click', getGame);
