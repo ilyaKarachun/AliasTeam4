@@ -32,9 +32,12 @@ app.use(express.json());
 app.use('/api/v1', api);
 app.use(errorHandlerMiddleWare);
 app.use(express.static('public'));
-
 const hbs = create({
-  partialsDir: ['shared/templates/', 'views/partials/', path.join(__dirname, 'views/partials')],
+  partialsDir: [
+    'shared/templates/',
+    'views/partials/',
+    path.join(__dirname, 'views/partials'),
+  ],
   helpers: {
     ifEquals: function (arg1, arg2, options) {
       return arg1 == arg2 ? options.fn(this) : options.inverse(this);
@@ -76,17 +79,15 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", {
-    title: "login",
-
+app.get('/login', (req, res) => {
+  res.render('login', {
+    title: 'login',
   });
 });
 
-app.get("/register", (req, res) => {
-  res.render("register", {
-    title: "Registration",
-
+app.get('/register', (req, res) => {
+  res.render('register', {
+    title: 'Registration',
   });
 });
 
@@ -113,3 +114,4 @@ async function startApp() {
 }
 
 startApp();
+module.exports = app;
