@@ -85,10 +85,11 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", {
-    title: "login",
+app.get('/games', clientAuthMiddleware, async (req, res) => {
+  const games = await gameService.getAll();
 
+  return res.render('games', {
+    games: games,
   });
 });
 
@@ -124,7 +125,9 @@ app.get('/profile', clientAuthMiddleware, async (req, res) => {
 
     game = gamesInfo.map((gameData) => ({ game: gameData }));
   } else {
-    const gameData = await gameService.getGameById('04cdc77de59ce67c67f901c087000d75');
+    const gameData = await gameService.getGameById(
+      '04cdc77de59ce67c67f901c087000d75',
+    );
     game = [gameData];
   }
 
