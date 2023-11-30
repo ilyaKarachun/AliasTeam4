@@ -1,5 +1,5 @@
 /* eslint-disable */
-import express, { Request, Response } from 'express';
+import express, { Request, Response, request } from 'express';
 import dotenv from 'dotenv';
 import api from './router';
 import cors from 'cors';
@@ -81,21 +81,23 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get('/profile/:id', clientAuthMiddleware, async (req, res) => {
-  const userInfo = await userService.getUserById(req.params.id);
-
-  if (userInfo && userInfo.statistic) {
-    const gameInfo = await Promise.all(userInfo.statistic.map(async (el) => {
-      return await gameService.getGameById(el);
-    }));
-
-
-    return res.render('profile', {
-      title: 'Profile',
-      userInfo: userInfo,
-      gameInfo: gameInfo,
-    });
+app.get('/profile', clientAuthMiddleware, async (req, res) => {
+  const data = req.userInfo.user;
+  let game;
+  console.log('data: ', data);
+  if (data.statistic.length > 0) {
+    game = await Promise.all(
+      data.statistic.map(async (el) => {
+        return await gameService.getGameById(el);
+      }),
+    );
   }
+  return res.render('profile', {
+    // title: 'Profile',
+    renderStatus: 'fsdf',
+    // data: data,
+    // game: game,
+  });
 });
 
 app.get('/login', (req, res) => {

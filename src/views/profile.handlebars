@@ -1,39 +1,39 @@
-<div id="profile-info">
-    <p className="profile-title">Your Profile</p>
+<div class="profile-info">
+    <div class="profile-row">
+    <p class="profile-title">Your Profile</p>
 
     {{!-- buttons --}}
-    <div>
         <button id="delete-button-profile">Delete</button>
     </div>
 
     {{!-- info --}}
-    <div className="profile-column">
-        <div className="profile-row">
-            <div>user name:</div><div id="userName">{{userInfo.username}}</div>
+    <p>render status: {{renderStatus}}</p>
+    <div class="profile-column">
+        <div class="profile-row">
+            <div>user name:</div><div id="userName">{{data.username}}</div>
         </div>
-        <div className="profile-row">
-            <div>user mail:</div><div id="userMail">{{userInfo.email}}</div>
+        <div class="profile-row">
+            <div>user mail:</div><div id="userMail">{{data.email}}</div>
         </div>
-        <div className="profile-row">
-            <div>user status:</div><div id="userStatus">{{userInfo.status}}</div>
+        <div class="profile-row">
+            <div>user status:</div><div id="userStatus">{{data.status}}</div>
         </div>
-        <div className="profile-column">
-            <p className="profile-subtitle">user statistic:</p>
+        <div class="profile-column">
+            <p class="profile-subtitle">user statistic:</p>
             {{#each gamesInfo}}
-            <div id="userStatistic">
-                <div className="profile-row">
-                    <div>game name:</div><div id="gameName{{id}}">{{name}}</div>
-                </div>
-                <div className="profile-row">
-                    <div>level:</div><div id="level{{id}}">{{level}}</div>
-                </div>
-                <div className="profile-row">
-                    <div>score:</div><div id="score{{id}}">{{score}}</div>
-                </div>
-                <div className="profile-row">
-                    <div>won:</div><div id="won{{id}}">{{won}}</div>
-                </div>
+            <div class="profile-row">
+                <div>game name:</div><div id="gameName{{id}}">{{this.name}}</div>
             </div>
+            <div class="profile-row">
+                <div>level:</div><div id="level{{id}}">{{this.level}}</div>
+            </div>
+            <div class="profile-row">
+                <div>score:</div><div id="score{{id}}">{{this.score}}</div>
+            </div>
+            <div class="profile-row">
+                <div>won:</div><div id="won{{id}}">{{this.won}}</div>
+            </div>
+            {{/each}}
         </div>
     </div>
 </div>
