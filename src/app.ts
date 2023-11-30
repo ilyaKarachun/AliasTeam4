@@ -33,7 +33,6 @@ app.use(express.json());
 app.use('/api/v1', api);
 app.use(errorHandlerMiddleWare);
 app.use(express.static('public'));
-
 const hbs = create({
   partialsDir: [
     'shared/templates/',
@@ -43,6 +42,11 @@ const hbs = create({
   helpers: {
     ifEquals: function (arg1, arg2, options) {
       return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+    },
+    ifEqualsTwo: function (arg1, arg2, arg3, options) {
+      return arg1 == arg2 || arg1 == arg3
+        ? options.fn(this)
+        : options.inverse(this);
     },
   },
 });
@@ -81,6 +85,31 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
+app.get("/login", (req, res) => {
+  res.render("login", {
+    title: "login",
+
+  });
+});
+
+app.get('/login', (req, res) => {
+  res.render('login', {
+    title: 'login',
+  });
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', {
+    title: 'Registration',
+  });
+});
+
+app.get('/rules', (req, res) => {
+  res.render('rules', {
+    title: 'Rules',
+  });
+});
+
 app.get('/profile', clientAuthMiddleware, async (req, res) => {
   const data = req.userInfo.user;
   let game;
@@ -106,24 +135,6 @@ app.get('/profile', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get('/login', (req, res) => {
-  res.render('login', {
-    title: 'login',
-  });
-});
-
-app.get('/register', (req, res) => {
-  res.render('register', {
-    title: 'Registration',
-  });
-});
-
-app.get('/rules', (req, res) => {
-  res.render('rules', {
-    title: 'Rules',
-  });
-});
-
 app.get('/', (request: Request, response: Response) => {
   return response.json({
     status: 'express server is running',
@@ -141,3 +152,4 @@ async function startApp() {
 }
 
 startApp();
+module.exports = app;
