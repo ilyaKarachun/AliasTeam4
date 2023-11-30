@@ -1,1 +1,73 @@
-<h1>Games</h1>
+<div class='all-games-container'>
+  <h1>Games</h1>
+  <form class='create-game-form'>
+    <label for='game-name' class='game-name'>Name of new game:</label>
+    <input
+      class='game-name-input'
+      type='game-name'
+      id='game-name'
+      name='game-name'
+      placeholder='Enter name of your game'
+    />
+    <label for='team-number'>Choose your team size:</label>
+    <select id='team-number' name='team-number'>
+      <option value='2'>2</option>
+      <option value='3'>3</option>
+      <option value='4'>4</option>
+      <option value='5'>5</option>
+      <option value='6'>6</option>
+      <option value='2'>7</option>
+      <option value='8'>8</option>
+      <option value='9'>9</option>
+    </select>
+    <label for='level'>Choose word difficulty:</label>
+    <select id='level' name='level'>
+      <option value='easy'>Easy</option>
+      <option value='medium'>Medium</option>
+      <option value='hard'>Hard</option>
+    </select>
+    <button class='create-game-button' id='create-game'>Create new game</button>
+  </form>
+  <div>
+    <h3>Join existing game</h3>
+    {{#each games}}
+      {{#ifEqualsTwo this.status 'creating' 'playing'}}
+        <div class='one-game-container'>
+          <h4>{{this.name}}</h4>
+          <button class='join-game-button' data-game-id='{{this.id}}'>Join game</button>
+        </div>
+      {{/ifEqualsTwo}}
+    {{/each}}
+  </div>
+</div>
+
+<script src='../../script/get-game.js'></script>
+<script src='../../script/get-cookie.js'></script>
+
+{{! 
+.one-game-container {
+  border: 1px solid #80add7;
+  margin-bottom: 15px;
+  background: #e5e5e5;
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform 0.3s;
+  text-align: center;
+}
+
+.one-game-container:hover {
+  transform: scale(1.03);
+}
+
+.join-game-button {
+  width: fit-content;
+  background-color: #80add7;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+} }}

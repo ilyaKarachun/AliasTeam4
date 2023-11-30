@@ -43,6 +43,11 @@ const hbs = create({
     ifEquals: function (arg1, arg2, options) {
       return arg1 == arg2 ? options.fn(this) : options.inverse(this);
     },
+    ifEqualsTwo: function (arg1, arg2, arg3, options) {
+      return arg1 == arg2 || arg1 == arg3
+        ? options.fn(this)
+        : options.inverse(this);
+    },
   },
 });
 
@@ -77,6 +82,18 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
 
   return res.render('game-single', {
     gameInfo: gameInfo.game,
+  });
+});
+
+app.get('/games/', async (req, res) => {
+  const games = await gameService.getAll();
+
+  if (!games) {
+    return res.render('404');
+  }
+
+  return res.render('games', {
+    games: games,
   });
 });
 
