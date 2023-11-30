@@ -1,43 +1,38 @@
 <div id="profile-info">
-    <p>Your Profile</p>
+    <p className="profile-title">Your Profile</p>
 
     {{!-- buttons --}}
     <div>
-        <button id="deleteButton">Delete</button>
+        <button id="delete-button-profile">Delete</button>
     </div>
 
     {{!-- info --}}
-    <div>
-        <div>
-            <div>user name:</div><div id="userName">{{"..."}}</div>
+    <div className="profile-column">
+        <div className="profile-row">
+            <div>user name:</div><div id="userName">{{userInfo.username}}</div>
         </div>
-        <div>
-            <div>user mail:</div><div id="userMail">{{"..."}}</div>
+        <div className="profile-row">
+            <div>user mail:</div><div id="userMail">{{userInfo.email}}</div>
         </div>
-        <div>
-            <div>user mail:</div><div id="userStatus">{{"..."}}</div>
+        <div className="profile-row">
+            <div>user status:</div><div id="userStatus">{{userInfo.status}}</div>
         </div>
-        <div>
-            <div>user status:</div><div id="userStatus">{{"..."}}</div>
-        </div>
-        <div>
-            <div>user statistic:</div>
+        <div className="profile-column">
+            <p className="profile-subtitle">user statistic:</p>
+            {{#each gamesInfo}}
             <div id="userStatistic">
-                <div>game name:</div><div id="gameName">...</div>
-                <div>level</div><div id="level">...</div>
-                <div>score</div><div id="score">...</div>
-                <div>won</div><div id="won">...</div>
-                {{!-- <button>Open chat history</button> --}}
-
-                {{!-- Dialog window/toggle list --}}
-                {{!-- <div>
-                    <div>Messages</div>
-                    <div>
-                        <div>{{"timestamp"}}</div>
-                        <div>{{"sender"}}</div>
-                        <div>{{"content"}}</div>
-                    </div>
-                </div> --}}
+                <div className="profile-row">
+                    <div>game name:</div><div id="gameName{{id}}">{{name}}</div>
+                </div>
+                <div className="profile-row">
+                    <div>level:</div><div id="level{{id}}">{{level}}</div>
+                </div>
+                <div className="profile-row">
+                    <div>score:</div><div id="score{{id}}">{{score}}</div>
+                </div>
+                <div className="profile-row">
+                    <div>won:</div><div id="won{{id}}">{{won}}</div>
+                </div>
             </div>
         </div>
     </div>

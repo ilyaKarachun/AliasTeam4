@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #profile-info {
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .profile-title {
+    font-size: 25px;
+  }
+  
+  .profile-subtitle {
+    font-size: 25px / 4;
+  }
+  
+  .profile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .profile-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  #delete-button-profile {
+    background-color: rgb(175, 0, 0);
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
