@@ -1,0 +1,68 @@
+.all-games-container {
+  background: rgba(150, 127, 127, 0.5);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.create-game-form {
+  max-width: 30%;
+  background-color: #80add7(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.create-game-form label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.create-game-form input,
+.create-game-form select {
+  border-radius: 5px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #80add7;
+}
+
+.create-game-button {
+  background-color: #80add7;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.games-word {
+  color: black;
+  margin-bottom: 20px;
+}
+
+.one-game-container {
+  max-width: 30%;
+  margin-left: 15px;
+  margin-bottom: 8px;
+  transition: transform 0.3s;
+  border-radius: 10px;
+}
+
+.one-game-container:hover {
+  transform: scale(1.03);
+}
+
+h4 {
+  margin-bottom: 10px;
+}
+
+.join-game-button {
+  background-color: #80add7;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

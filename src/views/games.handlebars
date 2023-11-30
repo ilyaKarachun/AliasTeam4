@@ -1,5 +1,6 @@
 <div class='all-games-container'>
-  <h1>Games</h1>
+  <h1 class='games-word'>Games</h1>
+  <h3>Create your own game</h3>
   <form class='create-game-form'>
     <label for='game-name' class='game-name'>Name of new game:</label>
     <input
@@ -29,7 +30,7 @@
     <button class='create-game-button' id='create-game-button'>Create new game</button>
   </form>
   <div>
-    <h3>Join existing game</h3>
+    <h3>.. or join existing one:</h3>
     {{#each games}}
       {{#ifEqualsTwo this.status 'creating' 'playing'}}
         <div class='one-game-container'>
