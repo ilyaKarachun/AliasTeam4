@@ -1,5 +1,5 @@
 /* eslint-disable */
-import express, { Request, Response } from 'express';
+import express, { Request, Response, request } from 'express';
 import dotenv from 'dotenv';
 import api from './router';
 import cors from 'cors';
@@ -16,6 +16,7 @@ import { mountGameRouter } from './router/games.router';
 import * as path from 'path';
 import clientAuthMiddleware from './middlewares/clientAuth.middleware';
 import { gameService } from './services/game.service';
+import { userService } from './services/user.service';
 
 /**
  * Workaround to init router
@@ -84,15 +85,10 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get('/games', clientAuthMiddleware, async (req, res) => {
-  const games = await gameService.getAll();
+app.get("/login", (req, res) => {
+  res.render("login", {
+    title: "login",
 
-  if (!games) {
-    return res.render('404');
-  }
-
-  return res.render('games', {
-    games: games,
   });
 });
 
@@ -111,6 +107,31 @@ app.get('/register', (req, res) => {
 app.get('/rules', (req, res) => {
   res.render('rules', {
     title: 'Rules',
+  });
+});
+
+app.get('/profile', clientAuthMiddleware, async (req, res) => {
+  const data = req.userInfo.user;
+  let game;
+
+  if (data.statistic.length > 0) {
+    const gamesInfo = await Promise.all(
+      data.statistic.map(async (el) => {
+        const gameData = await gameService.getGameById(el);
+        return gameData;
+      }),
+    );
+
+    game = gamesInfo.map((gameData) => ({ game: gameData }));
+  } else {
+    const gameData = await gameService.getGameById('04cdc77de59ce67c67f901c087000d75');
+    game = [gameData];
+  }
+
+  return res.render('profile', {
+    title: 'Profile',
+    data: data,
+    gamesInfo: game,
   });
 });
 

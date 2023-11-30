@@ -263,6 +263,8 @@ class GameProcess {
 
       await gameDao.updateGameFields(this.gameId, {
         won: winner,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        score: { team_1: this.score.team_1, team_2: this.score.team_2 },
         status: 'finished',
       });
 
