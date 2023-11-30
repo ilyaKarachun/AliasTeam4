@@ -32,7 +32,6 @@ app.use(express.json());
 app.use('/api/v1', api);
 app.use(errorHandlerMiddleWare);
 app.use(express.static('public'));
-
 const hbs = create({
   partialsDir: [
     'shared/templates/',
@@ -132,3 +131,4 @@ async function startApp() {
 }
 
 startApp();
+module.exports = app;

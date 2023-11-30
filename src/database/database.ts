@@ -1,10 +1,14 @@
 import Nano from 'nano';
-import { DOC_TYPES } from '../helpers/contstants';
+import dotenv from 'dotenv';
+import { config } from '../config';
+dotenv.config();
 
 const dbName: string = process.env.DB_NAME || 'alice';
 
 const nano = Nano(
-  `http://${process.env.DB_USER}:${process.env.DB_PASSWORD}@db:5984`,
+  `http://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
+    config?.[process.env.NODE_ENV as string]?.dbHost || 'db'
+  }:5984`,
 );
 
 const db = nano.db.use(dbName);
