@@ -10,7 +10,7 @@ const createGame = async () => {
     } else {
       const body = {
         name: gameName.value,
-        teamSize: team.value,
+        teamSize: Number(team.value),
         gameLevel: level.value,
       };
 
@@ -28,8 +28,7 @@ const createGame = async () => {
       if (createGameRequest.ok) {
         const gameId = res.gameID;
         localStorage.setItem('gameId', `${gameId}`);
-        window.location.href = `/games/${gameId}/chat?token=${getCookie(
-          'alias-token',
+        window.location.href = `/chat/${gameId},
         )}`;
       } else {
         throw new Error(res.error);

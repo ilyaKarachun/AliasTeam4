@@ -85,7 +85,7 @@ app.get('/games/:id', clientAuthMiddleware, async (req, res) => {
   });
 });
 
-app.get('/games/', async (req, res) => {
+app.get('/games/', clientAuthMiddleware, async (req, res) => {
   const games = await gameService.getAll();
 
   if (!games) {

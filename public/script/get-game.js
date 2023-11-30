@@ -1,22 +1,9 @@
 const getGameButton = document.querySelector('.join-game-button');
 
-const getGame = async (e) => {
+const getGame = async () => {
   try {
-    const id = e.target.dataset.id;
-
-    const getGameRequest = await fetch(`/api/v1/games/${id}/`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${getCookie('alias-token')}`,
-      },
-    });
-    const res = await getGameRequest.json();
-
-    if (getGameRequest.ok) {
-      window.location.href = `/games/${id}`;
-    } else {
-      throw new Error(res.error);
-    }
+    const id = getGameButton.dataset.id;
+    window.location.href = `/games/${id}`;
   } catch (e) {
     alert(e);
     console.error(e);
