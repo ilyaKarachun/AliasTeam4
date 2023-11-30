@@ -5,6 +5,7 @@ import { UserDto } from '../dto/user.dto';
 import HttpException from '../exceptions/httpException';
 import { GAME_STATUSES, LEVELS } from '../helpers/contstants';
 import GameProcess from './gameProcess.service';
+import { tokenService } from './token.service';
 
 class GameService {
   games: Record<string, GameProcess>;
@@ -13,10 +14,14 @@ class GameService {
     this.games = {};
   }
 
-  async establishGameConnection(user: UserDto, gameId: string, conn: any) {
-    if (!user) {
-      throw new HttpException(400, 'User Does Not Exist!');
+  async establishGameConnection(userToken: string, gameId: string, conn: any) {
+    const tokenData = tokenService.verifyToken(userToken);
+
+    if (!tokenData) {
+      throw new HttpException(400, 'Session Does Not Exist');
     }
+
+    const user = tokenData.user;
 
     // check whether game exists
     const game = await this.getGameById(gameId);
