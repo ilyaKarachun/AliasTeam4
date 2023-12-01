@@ -28,7 +28,14 @@ registerForm.addEventListener('submit', function (event) {
       .then((response) => response.json())
       .then((data) => {
         const message = data.message;
-        alert(message);
+        const error = data.error;
+        if (error !== undefined) {
+          alert(`Please check ${error.replace(/[\[\]"\']/g, '')}`);
+        }
+        if (message !== undefined) {
+          alert(message);
+          window.location.pathname = '/login';
+        }
       })
       .catch((error) => {
         console.error(error);
