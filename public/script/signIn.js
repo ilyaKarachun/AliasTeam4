@@ -26,7 +26,9 @@ loginForm.addEventListener('submit', function (event) {
 
       localStorage.setItem('userId', `${userId}`);
       localStorage.setItem('email', `${email}`);
-      console.log(data);
+      if (token !== undefined) {
+        window.location.pathname = '/games';
+      }
     })
     .catch((error) => {
       console.error(error);
