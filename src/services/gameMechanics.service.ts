@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ExcelReaderService } from './excelReader.service';
 import natural from 'natural';
+import checkWord from 'check-word';
 
 const stemmer = natural.PorterStemmer;
+const wordCorrect = checkWord('en');
 
 const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
@@ -71,30 +73,36 @@ const gameMechanicsService = {
   ): { message: string; words: string[]; wrong: boolean } => {
     const arrDescription = description.split(' ');
     const rootHidden = stemmer.stem(word);
+    const cheatWords: string[] = [];
     const wrongWords: string[] = [];
 
     arrDescription.map((el) => {
       el = el.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '');
-      const rootDescription = stemmer.stem(el);
-      if (rootHidden === rootDescription) {
+      if (wordCorrect.check(el)) {
+        const rootDescription = stemmer.stem(el);
+        if (rootHidden === rootDescription) {
+          cheatWords.push(el);
+          return {
+            word: el,
+            rootMatch: true,
+          };
+        }
+      } else {
         wrongWords.push(el);
-        return {
-          word: el,
-          rootMatch: true,
-        };
       }
     });
 
-    if (wrongWords.length > 0) {
+    if (cheatWords.length > 0 || wrongWords.length > 0) {
       return {
-        message: "Please, don't use similar words for your description",
-        words: wrongWords,
+        message:
+          "Please, don't use similar or non-existent words for your description",
+        words: [...cheatWords, ...wrongWords],
         wrong: true,
       };
     } else
       return {
         message: 'Words had checked',
-        words: wrongWords,
+        words: cheatWords,
         wrong: false,
       };
   },
