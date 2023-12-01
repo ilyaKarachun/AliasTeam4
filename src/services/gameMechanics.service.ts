@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ExcelReaderService } from './excelReader.service';
 import natural from 'natural';
-import checkWord from 'check-word';
+import fuzz from 'fuzzball';
 
 const stemmer = natural.PorterStemmer;
-const wordCorrect = checkWord('en');
 
 const gameMechanicsService = {
   randomWord: (difficulty: string, usedWords: string[]): string | null => {
@@ -67,45 +66,37 @@ const gameMechanicsService = {
     return isGuessed;
   },
 
-  rootWordRecognition: (
-    word: string,
-    description: string,
-  ): { message: string; words: string[]; wrong: boolean } => {
+  rootWordRecognition: (word: string, description: string) => {
     const arrDescription = description.split(' ');
     const rootHidden = stemmer.stem(word);
-    const cheatWords: string[] = [];
     const wrongWords: string[] = [];
 
-    arrDescription.map((el) => {
+    arrDescription.forEach((el) => {
       el = el.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '');
-      if (wordCorrect.check(el)) {
-        const rootDescription = stemmer.stem(el);
-        if (rootHidden === rootDescription) {
-          cheatWords.push(el);
-          return {
-            word: el,
-            rootMatch: true,
-          };
-        }
-      } else {
+      const rootDescription = stemmer.stem(el);
+
+      const similarity = fuzz.token_set_ratio(rootHidden, rootDescription);
+
+      const similarityThreshold = 75;
+
+      if (similarity > similarityThreshold) {
         wrongWords.push(el);
       }
     });
 
-    if (cheatWords.length > 0 || wrongWords.length > 0) {
+    if (wrongWords.length > 0) {
       return {
-        message:
-          "Please, don't use similar or non-existent words for your description",
-        words: [...cheatWords, ...wrongWords],
+        message: "Please, don't use similar words for your description",
+        words: wrongWords,
         wrong: true,
       };
-    } else
+    } else {
       return {
         message: 'Words had checked',
-        words: cheatWords,
+        words: wrongWords,
         wrong: false,
       };
+    }
   },
 };
-
 export default gameMechanicsService;

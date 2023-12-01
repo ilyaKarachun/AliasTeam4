@@ -137,11 +137,6 @@ app.get('/profile', clientAuthMiddleware, async (req, res) => {
       );
 
       gameArr = gamesInfo;
-    } else {
-      const gameData = await gameService.getGameById(
-        '04cdc77de59ce67c67f901c087000d75',
-      );
-      gameArr = [gameData];
     }
   }
 
