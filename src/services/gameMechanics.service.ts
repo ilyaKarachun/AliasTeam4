@@ -55,14 +55,10 @@ const gameMechanicsService = {
   ): { isGuessed: boolean; word: string } => {
     const hiddenLower = hidden.toLowerCase();
     const guessArr = guess.split(' ');
-    let isGuessed;
 
-    guessArr.map((el) => {
-      el = el.toLocaleLowerCase();
-      isGuessed = hiddenLower === el;
-    });
+    const isGuessed = guessArr.some((el) => el.toLowerCase() === hiddenLower);
 
-    return isGuessed;
+    return { isGuessed, word: hiddenLower };
   },
 
   rootWordRecognition: (
@@ -73,15 +69,11 @@ const gameMechanicsService = {
     const rootHidden = stemmer.stem(word);
     const wrongWords: string[] = [];
 
-    arrDescription.map((el) => {
+    arrDescription.forEach((el) => {
       el = el.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '');
       const rootDescription = stemmer.stem(el);
       if (rootHidden === rootDescription) {
         wrongWords.push(el);
-        return {
-          word: el,
-          rootMatch: true,
-        };
       }
     });
 
@@ -91,13 +83,18 @@ const gameMechanicsService = {
         words: wrongWords,
         wrong: true,
       };
-    } else
+    } else {
       return {
         message: 'Words had checked',
         words: wrongWords,
         wrong: false,
       };
+    }
   },
 };
+
+console.log(
+  gameMechanicsService.hiddenWordRecognition('apple', 'apple banana cherry'),
+);
 
 export default gameMechanicsService;
