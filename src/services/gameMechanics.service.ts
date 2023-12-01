@@ -100,4 +100,4 @@ const gameMechanicsService = {
   },
 };
 
-export default gameMechanicsService;
+export { gameMechanicsService };

@@ -4,7 +4,7 @@ import { GameDto } from '../dto/game.dto';
 import { UserDto } from '../dto/user.dto';
 import HttpException from '../exceptions/httpException';
 import { GAME_STATUSES, LEVELS } from '../helpers/contstants';
-import GameProcess from './gameProcess.service';
+import { GameProcess } from './gameProcess.service';
 import { tokenService } from './token.service';
 
 class GameService {

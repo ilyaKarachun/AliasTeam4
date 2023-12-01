@@ -1,5 +1,5 @@
 import { ChatService } from './chat.service';
-import gameMechanicsService from './gameMechanics.service';
+import { gameMechanicsService } from './gameMechanics.service';
 import { gameService } from './game.service';
 import { userDao } from '../dao/user.dao';
 import { gameDao } from '../dao/game.dao';
@@ -55,8 +55,6 @@ class GameProcess {
       turn: null,
       word: null,
     };
-
-    this.gameId = gameId;
   }
 
   /**
@@ -373,4 +371,4 @@ class GameProcess {
   }
 }
 
-export default GameProcess;
+export { GameProcess };
