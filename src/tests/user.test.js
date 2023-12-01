@@ -18,6 +18,8 @@ describe('auth logic', () => {
       .send({});
 
     expect(response.statusCode).toBe(400);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to login new user any data without', async () => {
@@ -26,6 +28,8 @@ describe('auth logic', () => {
       .send({});
 
     expect(response.statusCode).toBe(400);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to get users without token', async () => {

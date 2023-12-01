@@ -63,7 +63,7 @@ class GameController {
         body.teamSize,
         body.level,
       );
-      return res.status(200).json({ ...result });
+      return res.status(201).json({ ...result });
     } catch (e) {
       next(e);
     }
