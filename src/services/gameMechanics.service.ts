@@ -93,8 +93,4 @@ const gameMechanicsService = {
   },
 };
 
-console.log(
-  gameMechanicsService.hiddenWordRecognition('apple', 'apple banana cherry'),
-);
-
 export default gameMechanicsService;
