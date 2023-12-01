@@ -95,8 +95,7 @@ describe('gameMechanicsService', () => {
         guess,
       );
 
-      expect(result.isGuessed).toBe(true);
-      expect(result.word).toBe(hiddenWord.toLowerCase());
+      expect(result).toBe(true);
     });
 
     it('should return false if the guess does not match the hidden word', () => {
@@ -108,8 +107,7 @@ describe('gameMechanicsService', () => {
         guess,
       );
 
-      expect(result.isGuessed).toBe(false);
-      expect(result.word).toBe(hiddenWord.toLowerCase());
+      expect(result).toBe(false);
     });
 
     it('should handle case-insensitive comparisons', () => {
@@ -121,8 +119,7 @@ describe('gameMechanicsService', () => {
         guess,
       );
 
-      expect(result.isGuessed).toBe(true);
-      expect(result.word).toBe(hiddenWord.toLowerCase());
+      expect(result).toBe(true);
     });
 
     it('should handle multiple words in the guess', () => {
@@ -134,8 +131,7 @@ describe('gameMechanicsService', () => {
         guess,
       );
 
-      expect(result.isGuessed).toBe(true);
-      expect(result.word).toBe(hiddenWord.toLowerCase());
+      expect(result).toBe(true);
     });
 
     it('should handle an empty guess', () => {
@@ -147,8 +143,7 @@ describe('gameMechanicsService', () => {
         guess,
       );
 
-      expect(result.isGuessed).toBe(false);
-      expect(result.word).toBe(hiddenWord.toLowerCase());
+      expect(result).toBe(false);
     });
   });
 });

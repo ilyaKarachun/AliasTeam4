@@ -49,16 +49,11 @@ const gameMechanicsService = {
     return result[0];
   },
 
-  hiddenWordRecognition: (
-    hidden: string,
-    guess: string,
-  ): { isGuessed: boolean; word: string } => {
+  hiddenWordRecognition: (hidden: string, guess: string): boolean => {
     const hiddenLower = hidden.toLowerCase();
-    const guessArr = guess.split(' ');
+    const isGuessed = guess.split(' ');
 
-    const isGuessed = guessArr.some((el) => el.toLowerCase() === hiddenLower);
-
-    return { isGuessed, word: hiddenLower };
+    return isGuessed.some((el) => el.toLowerCase() === hiddenLower);
   },
 
   rootWordRecognition: (
@@ -92,9 +87,5 @@ const gameMechanicsService = {
     }
   },
 };
-
-console.log(
-  gameMechanicsService.hiddenWordRecognition('apple', 'apple banana cherry'),
-);
 
 export default gameMechanicsService;
