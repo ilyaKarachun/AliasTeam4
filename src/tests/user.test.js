@@ -18,6 +18,8 @@ describe('auth logic', () => {
       .send({});
 
     expect(response.statusCode).toBe(400);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to login new user any data without', async () => {
@@ -26,12 +28,16 @@ describe('auth logic', () => {
       .send({});
 
     expect(response.statusCode).toBe(400);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to get users without token', async () => {
     const response = await request(app).get(`${process.env.API}/users`);
 
     expect(response.statusCode).toBe(401);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to get users with token', async () => {
@@ -48,6 +54,8 @@ describe('auth logic', () => {
     );
 
     expect(response.statusCode).toBe(401);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to get user by id with token', async () => {
@@ -64,6 +72,8 @@ describe('auth logic', () => {
       .set({ Authorization: `Bearer ${token}` });
 
     expect(response.statusCode).toBe(404);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to update statisic without token', async () => {
@@ -72,6 +82,8 @@ describe('auth logic', () => {
       .send({ statistic: '10' });
 
     expect(response.statusCode).toBe(401);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to update statisic with token', async () => {
@@ -89,6 +101,8 @@ describe('auth logic', () => {
     );
 
     expect(response.statusCode).toBe(401);
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   it('try to delete user with token', async () => {
