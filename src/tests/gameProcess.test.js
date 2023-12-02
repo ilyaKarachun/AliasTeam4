@@ -140,6 +140,19 @@ describe('GameProcess', () => {
     expect(gameProcess.checkWord).toHaveBeenCalled();
   });
 
+  it('should start the game', async () => {
+    gameProcess.notifyAllMembers = jest.fn();
+    gameProcess.startRound = jest.fn();
+
+    gameProcess.startGame();
+
+    expect(gameProcess.gameStarted).toBe(true);
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      'System: All Players Are Here! We are ready to start!',
+    );
+    expect(gameProcess.startRound).toHaveBeenCalled();
+  });
+
   it('should handle new player connection', async () => {
     const teamNumber = 'team_1';
     const userId = 'userId';
