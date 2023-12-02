@@ -50,20 +50,11 @@ const gameMechanicsService = {
     return result[0];
   },
 
-  hiddenWordRecognition: (
-    hidden: string,
-    guess: string,
-  ): { isGuessed: boolean; word: string } => {
+  hiddenWordRecognition: (hidden: string, guess: string): boolean => {
     const hiddenLower = hidden.toLowerCase();
-    const guessArr = guess.split(' ');
-    let isGuessed;
+    const isGuessed = guess.split(' ');
 
-    guessArr.map((el) => {
-      el = el.toLocaleLowerCase();
-      isGuessed = hiddenLower === el;
-    });
-
-    return isGuessed;
+    return isGuessed.some((el) => el.toLowerCase() === hiddenLower);
   },
 
   rootWordRecognition: (word: string, description: string) => {
