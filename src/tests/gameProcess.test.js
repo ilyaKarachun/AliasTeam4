@@ -204,17 +204,20 @@ describe('GameProcess', () => {
     expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
   });
 
-  // it('should check words', async () => {
-  //   const message = 'Happy message';
-  //   const userId = 'userId';
-  //   gameProcess.roundData.word = 'word';
+  it('should check words', async () => {
+    const message = 'Happy message';
+    const userId = 'userId';
+    gameProcess.roundData.word = 'word';
 
-  //   gameMechanicsService.hiddenWordRecognition = jest.fn(() => {return true;});
-  //   gameProcess.guessWordHandler(userId) = jest.fn(() => {return true;});
-  //   gameProcess.checkWord(message, userId);
+    gameMechanicsService.hiddenWordRecognition = jest.fn(() => {
+      return true;
+    });
+    gameProcess.guessWordHandler = jest.fn(() => {
+      return true;
+    });
+    gameProcess.checkWord(message, userId);
 
-  //   expect(gameProcess.roundData.word).not.toBeUndefined();
-  //   expect(isGuessed).toBeTruthy()
-  //   expect( gameProcess.guessWordHandler).toBeTruthy()
-  // });
+    expect(gameProcess.roundData.word).not.toBeUndefined();
+    expect(gameProcess.guessWordHandler).toBeTruthy();
+  });
 });
