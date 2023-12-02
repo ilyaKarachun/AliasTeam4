@@ -41,7 +41,7 @@ registerForm.addEventListener('submit', function (event) {
         }
         if (message !== undefined) {
           alert(message);
-         // window.location.pathname = '/games';
+          window.location.pathname = '/games';
         }
       })
       .catch((error) => {
