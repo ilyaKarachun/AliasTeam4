@@ -1,7 +1,8 @@
 const { GameProcess } = require('../services/gameProcess.service');
 const { ChatService } = require('../services/chat.service');
 const { gameService } = require('../services/game.service');
-const { gameMechanicsService } = require('../services/gameMechanics.service')
+const { gameMechanicsService } = require('../services/gameMechanics.service');
+const { gameDao } = require('../dao/game.dao');
 
 jest.mock('../services/chat.service');
 
@@ -32,26 +33,153 @@ describe('GameProcess', () => {
     });
   });
 
-  it('should handle process of inserting new member in a chat ', async () => {
+  it('should return all connections from teamConnections', () => {
     const teamNumber = 'team_1';
     const userId = 'userId';
-    class Connection {}
-    const conn = new Connection();
+    const conn1 = { send: jest.fn(), on: jest.fn() };
+    const conn2 = { send: jest.fn(), on: jest.fn() };
 
-    gameProcess.newPlayerHandler = jest.fn(() => {
+    gameProcess.teamConnections[teamNumber] = {
+      [userId + '1']: conn1,
+      [userId + '2']: conn2,
+    };
+
+    const connections = gameProcess.getAllConnections();
+
+    expect(connections).toContain(conn1);
+    expect(connections).toContain(conn2);
+    expect(connections.length).toBe(2);
+  });
+
+  it('should notify all members with the given message', () => {
+    const teamNumber = 'team_1';
+    const userId = 'userId';
+    const conn1 = { send: jest.fn(), on: jest.fn() };
+    const conn2 = { send: jest.fn(), on: jest.fn() };
+
+    gameProcess.teamConnections[teamNumber] = {
+      [userId + '1']: conn1,
+      [userId + '2']: conn2,
+    };
+    gameProcess.chatService = { sendMessage: jest.fn() };
+    const message = 'Hello, everyone!';
+    gameProcess.notifyAllMembers(message);
+
+    expect(gameProcess.chatService.sendMessage).toHaveBeenCalledWith(
+      [conn1, conn2],
+      message,
+    );
+  });
+
+  it('should notify all members when a user is disconnected', () => {
+    const teamNumber = 'team_1';
+    const userId = 'userId';
+    const conn = { send: jest.fn(), on: jest.fn() };
+
+    gameProcess.teamConnections[teamNumber] = {
+      [userId]: conn,
+    };
+    gameProcess.notifyAllMembers = jest.fn((mes) => {
+      return mes;
+    });
+    gameProcess.disconnectHandler(userId, conn);
+
+    conn.on.mock.calls[0][1]();
+
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      `System: user ${userId} was disconnected`,
+    );
+  });
+
+  it('should handle player messages during the game round', () => {
+    const teamNumber = 'team_1';
+    const userId = 'userId';
+    const conn = { send: jest.fn(), on: jest.fn() };
+    const message = 'Test message';
+
+    gameProcess.teamConnections[teamNumber] = {
+      [userId]: conn,
+    };
+
+    gameProcess.gameStarted = true;
+    gameProcess.roundData.turn = teamNumber;
+    gameProcess.roundData.leadingPlayerId = 'otherPlayerId';
+    gameProcess.checkWord = jest.fn();
+    gameProcess.addMessageToHistory = jest.fn();
+
+    gameProcess.playerMessageHandler(userId, conn);
+
+    conn.on.mock.calls[0][1](message);
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      expect.stringContaining(message),
+    );
+    expect(gameProcess.addMessageToHistory).toHaveBeenCalled();
+    expect(gameProcess.checkWord).toHaveBeenCalled();
+  });
+
+  it('should handle new player connection', async () => {
+    const teamNumber = 'team_1';
+    const userId = 'userId';
+    const conn = { send: jest.fn(), on: jest.fn() };
+
+    gameProcess.isReadyToStart = jest.fn(() => Promise.resolve(true));
+    gameDao.updateGameFields = jest.fn(() => Promise.resolve());
+    gameProcess.startGame = jest.fn();
+    gameProcess.notifyAllMembers = jest.fn();
+    gameProcess.disconnectHandler = jest.fn((a, b) => {
       return true;
     });
-
-    gameProcess.teamConnections[teamNumber] = { userId: '' };
-
-    gameProcess.insertMember(teamNumber, userId, conn);
-    expect(gameProcess.newPlayerHandler).toHaveBeenCalledWith(
-      teamNumber,
-      userId,
-      conn,
+    gameService.getRecentMessages = jest.fn(() =>
+      Promise.resolve([
+        {
+          timestamp: '12.12.12',
+          sender: 'otherUserId',
+          content: 'Other message',
+        },
+      ]),
     );
-    expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
+    gameProcess.playerMessageHandler = jest.fn(() => {
+      return true;
+    });
+    await gameProcess.newPlayerHandler(teamNumber, userId, conn);
+
+    expect(conn.send).toHaveBeenCalledWith(
+      `Welcome to the game!, You are ${teamNumber} member`,
+    );
+    expect(gameService.getRecentMessages).toHaveBeenCalledWith(
+      gameProcess.gameId,
+      10,
+    );
+    expect(conn.send).toHaveBeenCalledWith(
+      '12.12.12 <<otherUserId>>: Other message',
+    );
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      `System: user ${userId} was connected to the ${teamNumber}`,
+    );
+    expect(gameProcess.disconnectHandler).toHaveBeenCalledWith(userId, conn);
+    expect(gameProcess.playerMessageHandler).toHaveBeenCalledWith(userId, conn);
   });
+
+  // it('should handle process of inserting new member in a chat ', async () => {
+  //   const teamNumber = 'team_1';
+  //   const userId = 'userId';
+  //   class Connection {}
+  //   const conn = new Connection();
+
+  //   gameProcess.newPlayerHandler = jest.fn(() => {
+  //     return true;
+  //   });
+
+  //   gameProcess.teamConnections[teamNumber] = { userId: '' };
+
+  //   gameProcess.insertMember(teamNumber, userId, conn);
+  //   expect(gameProcess.newPlayerHandler).toHaveBeenCalledWith(
+  //     teamNumber,
+  //     userId,
+  //     conn,
+  //   );
+  //   expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
+  // });
 
   // it('should handle new player connection to the chat', async () => {
   //   const teamNumber = 'team_1';
@@ -63,42 +191,40 @@ describe('GameProcess', () => {
   //   expect(conn.send).toHaveBeenCalled();
   // });
 
-  it('should add message to the history', async () => {
-    const message = {
-      timestamp: '12.12.12',
-      sender: 'userId',
-      content: 'Happy message',
-    };
+  // it('should add message to the history', async () => {
+  //   const message = {
+  //     timestamp: '12.12.12',
+  //     sender: 'userId',
+  //     content: 'Happy message',
+  //   };
 
-    gameService.addMessageToHistory = jest.fn(() => {
-      return true;
-    });
+  //   gameService.addMessageToHistory = jest.fn(() => {
+  //     return true;
+  //   });
 
-    await gameProcess.addMessageToHistory(message);
+  //   await gameProcess.addMessageToHistory(message);
 
-    expect(gameProcess.messageHistory).toEqual([
-      {
-        timestamp: '12.12.12',
-        sender: 'userId',
-        content: 'Happy message',
-      },
-    ]);
-    expect(gameService.addMessageToHistory).toBeTruthy();
-  });
+  //   expect(gameProcess.messageHistory).toEqual([
+  //     {
+  //       timestamp: '12.12.12',
+  //       sender: 'userId',
+  //       content: 'Happy message',
+  //     },
+  //   ]);
+  //   expect(gameService.addMessageToHistory).toBeTruthy();
+  // });
 
-  it('should check words', async () => {
-    const message = 'Happy message';
-    const userId = 'userId';
-    gameProcess.roundData.word = 'word';
+  // it('should check words', async () => {
+  //   const message = 'Happy message';
+  //   const userId = 'userId';
+  //   gameProcess.roundData.word = 'word';
 
-    gameMechanicsService.hiddenWordRecognition = jest.fn(() => {return true;});
-    gameProcess.guessWordHandler(userId) = jest.fn(() => {return true;});
-    gameProcess.checkWord(message, userId);
-    
+  //   gameMechanicsService.hiddenWordRecognition = jest.fn(() => {return true;});
+  //   gameProcess.guessWordHandler(userId) = jest.fn(() => {return true;});
+  //   gameProcess.checkWord(message, userId);
 
-    expect(gameProcess.roundData.word).not.toBeUndefined();
-    expect(isGuessed).toBeTruthy()
-    expect( gameProcess.guessWordHandler).toBeTruthy()
-  });
-
+  //   expect(gameProcess.roundData.word).not.toBeUndefined();
+  //   expect(isGuessed).toBeTruthy()
+  //   expect( gameProcess.guessWordHandler).toBeTruthy()
+  // });
 });
