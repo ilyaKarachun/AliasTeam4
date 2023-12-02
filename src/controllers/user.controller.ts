@@ -30,7 +30,13 @@ class UserController {
       }
 
       await userService.registration(body);
-      return res.status(201).json({ message: 'User successfully registered.' });
+      const loginResult = await userService.login({
+        email: body.email,
+        password: body.password,
+      });
+      return res
+        .status(201)
+        .json({ message: 'User successfully registered.', loginResult });
     } catch (e) {
       return next(e);
     }
