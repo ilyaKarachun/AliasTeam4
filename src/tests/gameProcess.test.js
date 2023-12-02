@@ -91,6 +91,29 @@ describe('GameProcess', () => {
     );
   });
 
+  it('should add message to the history', async () => {
+    const message = {
+      timestamp: '12.12.12',
+      sender: 'userId',
+      content: 'Happy message',
+    };
+
+    gameService.addMessageToHistory = jest.fn(() => {
+      return true;
+    });
+
+    gameProcess.addMessageToHistory(message);
+
+    expect(gameProcess.messageHistory).toEqual([
+      {
+        timestamp: '12.12.12',
+        sender: 'userId',
+        content: 'Happy message',
+      },
+    ]);
+    expect(gameService.addMessageToHistory).toBeTruthy();
+  });
+
   it('should handle player messages during the game round', () => {
     const teamNumber = 'team_1';
     const userId = 'userId';
@@ -160,59 +183,26 @@ describe('GameProcess', () => {
     expect(gameProcess.playerMessageHandler).toHaveBeenCalledWith(userId, conn);
   });
 
-  // it('should handle process of inserting new member in a chat ', async () => {
-  //   const teamNumber = 'team_1';
-  //   const userId = 'userId';
-  //   class Connection {}
-  //   const conn = new Connection();
+  it('should handle process of inserting new member in a chat ', async () => {
+    const teamNumber = 'team_1';
+    const userId = 'userId';
+    class Connection {}
+    const conn = new Connection();
 
-  //   gameProcess.newPlayerHandler = jest.fn(() => {
-  //     return true;
-  //   });
+    gameProcess.newPlayerHandler = jest.fn(() => {
+      return true;
+    });
 
-  //   gameProcess.teamConnections[teamNumber] = { userId: '' };
+    gameProcess.teamConnections[teamNumber] = { userId: '' };
 
-  //   gameProcess.insertMember(teamNumber, userId, conn);
-  //   expect(gameProcess.newPlayerHandler).toHaveBeenCalledWith(
-  //     teamNumber,
-  //     userId,
-  //     conn,
-  //   );
-  //   expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
-  // });
-
-  // it('should handle new player connection to the chat', async () => {
-  //   const teamNumber = 'team_1';
-  //   const userId = 'userId';
-  //   const conn = { send: jest.fn(), on: jest.fn() };
-
-  //   await gameProcess.newPlayerHandler(teamNumber, userId, conn);
-
-  //   expect(conn.send).toHaveBeenCalled();
-  // });
-
-  // it('should add message to the history', async () => {
-  //   const message = {
-  //     timestamp: '12.12.12',
-  //     sender: 'userId',
-  //     content: 'Happy message',
-  //   };
-
-  //   gameService.addMessageToHistory = jest.fn(() => {
-  //     return true;
-  //   });
-
-  //   await gameProcess.addMessageToHistory(message);
-
-  //   expect(gameProcess.messageHistory).toEqual([
-  //     {
-  //       timestamp: '12.12.12',
-  //       sender: 'userId',
-  //       content: 'Happy message',
-  //     },
-  //   ]);
-  //   expect(gameService.addMessageToHistory).toBeTruthy();
-  // });
+    gameProcess.insertMember(teamNumber, userId, conn);
+    expect(gameProcess.newPlayerHandler).toHaveBeenCalledWith(
+      teamNumber,
+      userId,
+      conn,
+    );
+    expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
+  });
 
   // it('should check words', async () => {
   //   const message = 'Happy message';
