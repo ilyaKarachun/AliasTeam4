@@ -33,7 +33,6 @@ registerForm.addEventListener('submit', function (event) {
         document.cookie = `alias-token=${token}`;
         const userId = data.loginResult.user.id;
         const email = data.loginResult.user.email;
-        console.log(data)
         localStorage.setItem('userId', `${userId}`);
         localStorage.setItem('email', `${email}`);
         if (error !== undefined) {
