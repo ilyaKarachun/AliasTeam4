@@ -19,33 +19,36 @@
         </div>
         <div class="profile-column">
             <p class="profile-subtitle">User statistic:</p>
+
             {{#each gamesInfo}}
+            <div>{{this}}</div>
             <div class="statistic-profile">
                 <div class="profile-row">
-                    <div>game name:</div><div id="gameName{{this.game}}">{{this.game.name}}</div>
+                    <div>game name:</div><div id="gameName{{this.name}}">{{this.name}}</div>
                 </div>
                 <div class="profile-row">
-                    <div>game status:</div><div id="gameName{{this.game}}">{{this.game.status}}</div>
+                    <div>game status:</div><div id="gameName{{this.status}}">{{this.status}}</div>
                 </div>
                 <div class="profile-row">
-                    <div>level:</div><div id="level{{this.game}}">{{this.game.level}}</div>
+                    <div>level:</div><div id="level{{this.level}}">{{this.level}}</div>
                 </div>
                 <div class="profile-row">
-                    <div>score:</div><div id="score{{this.game}}">
+
+                    <div>score:</div><div id="score{{this}}">
                         <div class="profile-column">
-                            {{#each this.game.score}}
                             <div class="profile-row">
-                                <div>team 1: </div><div>{{this.team_1}}</div>
+                                <div>team 1: </div>
+                                <div>{{this.score.team_1}}</div>
                             </div>
                             <div class="profile-row">
-                                <div>team 2: </div><div>{{this.team_2}}</div>
+                                <div>team 2: </div>
+                                <div>{{this.score.team_2}}</div>
                             </div>
-                            {{/each}}
                         </div>
                     </div>
                 </div>
                 <div class="profile-row">
-                    <div>won:</div><div id="won{{this.game}}">{{this.game.won}}</div>
+                    <div>won:</div><div id="won{{this.won}}">{{this.won}}</div>
                 </div>
             </div>
             {{/each}}
