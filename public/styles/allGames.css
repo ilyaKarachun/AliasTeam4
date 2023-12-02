@@ -8,7 +8,7 @@
 
 .create-game-form {
   width: 100%;
-  background-color: #80add7(255, 255, 255, 0.8);
+  background-color: #80add7;
   padding: 20px;
   border-radius: 10px;
 }
@@ -62,4 +62,10 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+
+.right {
+  height: 500px; /* Установите желаемую высоту */
+  overflow: auto; /* Добавляет полосы прокрутки при необходимости */
 }
