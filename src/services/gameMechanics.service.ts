@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ExcelReaderService } from './excelReader.service';
 import natural from 'natural';
+import fuzz from 'fuzzball';
 
 const stemmer = natural.PorterStemmer;
 
@@ -65,23 +66,21 @@ const gameMechanicsService = {
     return isGuessed;
   },
 
-  rootWordRecognition: (
-    word: string,
-    description: string,
-  ): { message: string; words: string[]; wrong: boolean } => {
+  rootWordRecognition: (word: string, description: string) => {
     const arrDescription = description.split(' ');
     const rootHidden = stemmer.stem(word);
     const wrongWords: string[] = [];
 
-    arrDescription.map((el) => {
+    arrDescription.forEach((el) => {
       el = el.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '');
       const rootDescription = stemmer.stem(el);
-      if (rootHidden === rootDescription) {
+
+      const similarity = fuzz.token_set_ratio(rootHidden, rootDescription);
+
+      const similarityThreshold = 75;
+
+      if (similarity > similarityThreshold) {
         wrongWords.push(el);
-        return {
-          word: el,
-          rootMatch: true,
-        };
       }
     });
 
@@ -91,13 +90,13 @@ const gameMechanicsService = {
         words: wrongWords,
         wrong: true,
       };
-    } else
+    } else {
       return {
         message: 'Words had checked',
         words: wrongWords,
         wrong: false,
       };
+    }
   },
 };
-
 export default gameMechanicsService;

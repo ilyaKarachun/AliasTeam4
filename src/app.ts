@@ -113,27 +113,30 @@ app.get('/rules', (req, res) => {
 
 app.get('/profile', clientAuthMiddleware, async (req, res) => {
   const userId = req.userInfo.user.id;
-  console.log("userId: ",userId)
-  const data = await userService.getUserById({id: userId});
-  console.log("data: ", data)
+  const data = await userService.getUserById({ id: userId });
   let gameArr;
 
-  if(data?.statistic){
+  if (data?.statistic) {
     if (data.statistic.length > 0) {
       const gamesInfo = await Promise.all(
         data.statistic.map(async (el) => {
           const gameData = await gameService.getGameById(el);
-          return gameData;
+          if(gameData.game){
+            return {
+              id: gameData.game.id,
+              status: gameData.game.status,
+              name: gameData.game.name,
+              team_1: gameData.game.team_1,
+              team_2: gameData.game.team_2,
+              level: gameData.game.level,
+              score: gameData.game.score,
+              won: gameData.game.won,
+            };
+          }
         }),
       );
-  
+
       gameArr = gamesInfo;
-      console.log(gameArr);
-    } else {
-      const gameData = await gameService.getGameById(
-        '04cdc77de59ce67c67f901c087000d75',
-      );
-      gameArr = [gameData];
     }
   }
 
