@@ -217,6 +217,18 @@ describe('GameProcess', () => {
     expect(gameProcess.teamConnections[teamNumber][userId]).toBe(conn);
   });
 
+  it('should handle guessWordHandler', async () => {
+    gameProcess.roundData = { score: 1 };
+    const userId = 'someUserId';
+    const initialScore = gameProcess.roundData.score;
+
+    gameProcess.guessWordHandler(userId);
+    expect(gameProcess.roundData.score).toBe(initialScore + 1);
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      `System: word was guessed by ${userId}!`,
+    );
+  });
+
   it('should check words', async () => {
     const message = 'Happy message';
     const userId = 'userId';
@@ -232,5 +244,66 @@ describe('GameProcess', () => {
 
     expect(gameProcess.roundData.word).not.toBeUndefined();
     expect(gameProcess.guessWordHandler).toBeTruthy();
+  });
+
+  it('should make a turn when roundData.turn is defined', async () => {
+    gameProcess.roundData.turn = 'team_1';
+
+    gameProcess.getGameInfoFromDB = jest.fn(() => ({
+      dto: {
+        level: 'easy',
+        words: ['apple', 'banana', 'cherry'],
+      },
+    }));
+    gameProcess.sendWordToLeadingPlayer = jest.fn();
+    gameProcess.notifyUsersAboutTurn = jest.fn();
+    gameDao.updateGameFields = jest.fn();
+
+    await gameProcess.makeTurn();
+
+    expect(gameProcess.getGameInfoFromDB).toHaveBeenCalledWith(
+      gameProcess.gameId,
+    );
+    expect(gameProcess.sendWordToLeadingPlayer).toHaveBeenCalled();
+    expect(gameProcess.notifyUsersAboutTurn).toHaveBeenCalled();
+    expect(gameDao.updateGameFields).toHaveBeenCalledWith(gameProcess.gameId, {
+      words: expect.arrayContaining([
+        'apple',
+        'banana',
+        'cherry',
+        expect.anything(),
+      ]),
+    });
+  });
+
+  it('should not make a turn when roundData.turn is null', async () => {
+    gameProcess.roundData.turn = null;
+
+    gameProcess.getGameInfoFromDB = jest.fn();
+    gameProcess.sendWordToLeadingPlayer = jest.fn();
+    gameProcess.notifyUsersAboutTurn = jest.fn();
+    gameDao.updateGameFields = jest.fn();
+
+    await gameProcess.makeTurn();
+    expect(gameProcess.getGameInfoFromDB).not.toHaveBeenCalled();
+    expect(gameProcess.sendWordToLeadingPlayer).not.toHaveBeenCalled();
+    expect(gameProcess.notifyUsersAboutTurn).not.toHaveBeenCalled();
+    expect(gameDao.updateGameFields).not.toHaveBeenCalled();
+  });
+
+  it('should check team size', async () => {
+    gameDao.getTeams = jest.fn(() => {
+      const teamData = {
+        team_size: 3,
+      };
+      return teamData;
+    });
+
+    const gameId = 'someGameId';
+    const expectedTeamSize = 6;
+    const result = await gameProcess.checkTeamSize(gameId);
+
+    expect(result).toBe(expectedTeamSize);
+    expect(gameDao.getTeams).toHaveBeenCalledWith(gameId);
   });
 });
