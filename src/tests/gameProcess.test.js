@@ -140,6 +140,45 @@ describe('GameProcess', () => {
     expect(gameProcess.checkWord).toHaveBeenCalled();
   });
 
+  it('should start a new round', async () => {
+    gameProcess.currentRound = 2;
+    gameProcess.rounds = 4;
+    gameProcess.roundDuration = 120000;
+    gameProcess.score = { team_1: 10, team_2: 15 };
+
+    const mockRandomWord = 'fish';
+    gameProcess.gameMechanicsService = {
+      randomWord: jest.fn(() => {
+        return mockRandomWord;
+      }),
+    };
+
+    const mockGameInfo = {
+      dto: {
+        level: 'easy',
+        words: ['apple', 'banana', 'cherry'],
+      },
+    };
+    gameProcess.getGameInfoFromDB = jest
+      .fn()
+      .mockResolvedValueOnce(mockGameInfo);
+
+    gameDao.updateGameFields = jest.fn();
+    gameProcess.notifyAllMembers = jest.fn();
+    gameProcess.notifyUsersAboutTurn = jest.fn();
+
+    jest.useFakeTimers();
+
+    await gameProcess.startRound();
+
+    expect(gameProcess.currentRound).toBe(3);
+    expect(gameDao.updateGameFields).toHaveBeenCalled();
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      'ROUND 3. Score: team_1: 10 | team_2: 15',
+    );
+    expect(gameProcess.notifyUsersAboutTurn).toHaveBeenCalled();
+  });
+
   it('should start the game', async () => {
     gameProcess.notifyAllMembers = jest.fn();
     gameProcess.startRound = jest.fn();
@@ -371,7 +410,7 @@ describe('GameProcess', () => {
 
     await gameProcess.endRound();
 
-    expect(gameProcess.score.team_1).toBe(10);
+    expect(gameProcess.score.team_1).toBe(20);
     expect(gameProcess.roundData.score).toBe(0);
     expect(gameProcess.startRound).toHaveBeenCalled();
   });
