@@ -114,11 +114,13 @@ class GameProcess {
           )
         ) {
           let validMessage = true;
+          let resultValid;
           if (userId === this.roundData.leadingPlayerId) {
-            validMessage = !gameMechanicsService.rootWordRecognition(
+            resultValid = gameMechanicsService.rootWordRecognition(
               this.roundData.word || '',
               msg,
-            ).wrong;
+            );
+            validMessage = !resultValid.wrong;
           }
 
           if (validMessage) {
@@ -131,7 +133,7 @@ class GameProcess {
             this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
             this.addMessageToHistory(message);
           } else {
-            conn.send('Do not use similar words in your description!');
+            conn.send(`${resultValid.message}: ${resultValid.words}`);
           }
 
           // check word if author is not leading player
@@ -261,6 +263,8 @@ class GameProcess {
 
       await gameDao.updateGameFields(this.gameId, {
         won: winner,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        score: { team_1: this.score.team_1, team_2: this.score.team_2 },
         status: 'finished',
       });
 

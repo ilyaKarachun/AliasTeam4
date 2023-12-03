@@ -1,0 +1,47 @@
+
+  .profile-info {
+    margin: 40px;
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .profile-row-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .profile-title {
+    font-size: 25px;
+  }
+  
+  .profile-subtitle {
+    font-size: 18px;
+  }
+  
+  .profile-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 15px
+  }
+  
+  .profile-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .statistic-profile{
+    padding: 10px;
+    background-color: #e0eff37d;
+  }
+  /* #delete-button-profile {
+    background-color: rgb(175, 0, 0);
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  } */
+  
