@@ -1,4 +1,4 @@
-const { GameProcess } = require('../services/gameProcess.service');
+const { default: GameProcess } = require('../services/gameProcess.service');
 const { ChatService } = require('../services/chat.service');
 const { gameService } = require('../services/game.service');
 const { gameMechanicsService } = require('../services/gameMechanics.service');
@@ -361,5 +361,48 @@ describe('GameProcess', () => {
 
     expect(result).toBe(expectedTeamSize);
     expect(gameDao.getTeams).toHaveBeenCalledWith(gameId);
+  });
+
+  it('should end the round when currentRound is less than rounds', async () => {
+    gameProcess.currentRound = 2;
+    gameProcess.rounds = 4;
+    gameProcess.roundData.turn = 'team_1';
+    gameProcess.roundData.score = 10;
+
+    await gameProcess.endRound();
+
+    expect(gameProcess.score.team_1).toBe(10);
+    expect(gameProcess.roundData.score).toBe(0);
+    expect(gameProcess.startRound).toHaveBeenCalled();
+  });
+
+  it('should end the game when currentRound equals rounds', async () => {
+    gameProcess.currentRound = 4;
+    gameProcess.rounds = 4;
+    gameProcess.roundData.turn = 'team_2';
+    gameProcess.roundData.score = 8;
+    gameProcess.score.team_1 = 15;
+    gameProcess.score.team_2 = 20;
+
+    gameDao.updateGameFields.mockResolvedValueOnce();
+
+    gameProcess.getGameInfoFromDB = jest.fn().mockResolvedValueOnce({
+      dto: {
+        team_1: ['player_1', 'player_2'],
+        team_2: ['player_3', 'player_4'],
+      },
+    });
+
+    await gameProcess.endRound();
+
+    expect(gameDao.updateGameFields).toHaveBeenCalledWith('someGameId', {
+      won: 'team_2',
+      status: 'finished',
+    });
+    expect(gameProcess.getGameInfoFromDB).toHaveBeenCalledWith('someGameId');
+
+    expect(gameProcess.notifyAllMembers).toHaveBeenCalledWith(
+      'team_2 win! They have 20 scores!',
+    );
   });
 });

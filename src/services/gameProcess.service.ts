@@ -369,4 +369,4 @@ class GameProcess {
   }
 }
 
-export { GameProcess };
+export default GameProcess;
