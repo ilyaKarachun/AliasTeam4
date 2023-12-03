@@ -437,6 +437,10 @@ describe('GameProcess', () => {
     await gameProcess.endRound();
 
     expect(gameDao.updateGameFields).toHaveBeenCalledWith('someGameId', {
+      score: {
+        team_1: 15,
+        team_2: 20,
+      },
       won: 'team_2',
       status: 'finished',
     });
