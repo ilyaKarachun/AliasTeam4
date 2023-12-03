@@ -246,6 +246,31 @@ describe('GameProcess', () => {
     expect(gameProcess.guessWordHandler).toBeTruthy();
   });
 
+  it('should send word to leading player', () => {
+    const leadingPlayerId = 'player_1';
+    const teamTurn = 'team_1';
+    const leadingPlayerConn = {
+      send: jest.fn(),
+    };
+
+    gameProcess.roundData.turn = teamTurn;
+    gameProcess.roundData.leadingPlayerId = leadingPlayerId;
+    gameProcess.teamConnections[teamTurn] = {
+      [leadingPlayerId]: leadingPlayerConn,
+    };
+
+    gameProcess.sendWordToLeadingPlayer();
+
+    expect(leadingPlayerConn.send).toHaveBeenCalledWith(
+      `System: Your word: ${gameProcess.roundData.word}`,
+    );
+  });
+
+  it('should not send word if turn or leadingPlayerId is undefined', () => {
+    gameProcess.sendWordToLeadingPlayer();
+    expect(gameProcess.teamConnections.team_2).toEqual({});
+  });
+
   it('should make a turn when roundData.turn is defined', async () => {
     gameProcess.roundData.turn = 'team_1';
 
