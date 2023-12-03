@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { gameMechanicsService } from '../services/gameMechanics.service';
+import gameMechanicsService from '../services/gameMechanics.service';
 import { GameDao } from '../dao/game.dao';
 const gameDAO = new GameDao();
 

@@ -1,7 +1,9 @@
 const { default: GameProcess } = require('../services/gameProcess.service');
 const { ChatService } = require('../services/chat.service');
 const { gameService } = require('../services/game.service');
-const { gameMechanicsService } = require('../services/gameMechanics.service');
+const {
+  default: gameMechanicsService,
+} = require('../services/gameMechanics.service');
 const { gameDao } = require('../dao/game.dao');
 
 jest.mock('../services/chat.service');

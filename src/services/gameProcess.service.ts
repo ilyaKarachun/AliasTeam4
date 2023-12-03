@@ -1,5 +1,5 @@
 import { ChatService } from './chat.service';
-import { gameMechanicsService } from './gameMechanics.service';
+import gameMechanicsService from './gameMechanics.service';
 import { gameService } from './game.service';
 import { userDao } from '../dao/user.dao';
 import { gameDao } from '../dao/game.dao';
