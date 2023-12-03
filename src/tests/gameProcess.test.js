@@ -271,6 +271,37 @@ describe('GameProcess', () => {
     expect(gameProcess.teamConnections.team_2).toEqual({});
   });
 
+  it('should notify users about turn', () => {
+    const leadingPlayerId = 'player_1';
+    const teamTurn = 'team_1';
+    const leadingPlayerConn = {
+      send: jest.fn(),
+    };
+    const otherPlayerConn1 = {
+      send: jest.fn(),
+    };
+    const otherPlayerConn2 = {
+      send: jest.fn(),
+    };
+
+    gameProcess.roundData.turn = teamTurn;
+    gameProcess.roundData.leadingPlayerId = leadingPlayerId;
+    gameProcess.teamConnections[teamTurn] = {
+      [leadingPlayerId]: leadingPlayerConn,
+      other_player_1: otherPlayerConn1,
+      other_player_2: otherPlayerConn2,
+    };
+
+    gameProcess.notifyUsersAboutTurn();
+
+    expect(leadingPlayerConn.send).not.toHaveBeenCalled();
+  });
+
+  it('should not notify users if turn or leadingPlayerId is undefined', () => {
+    gameProcess.notifyUsersAboutTurn();
+    expect(gameProcess.teamConnections.team_2).toEqual({});
+  });
+
   it('should make a turn when roundData.turn is defined', async () => {
     gameProcess.roundData.turn = 'team_1';
 
