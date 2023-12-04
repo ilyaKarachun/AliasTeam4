@@ -27,15 +27,16 @@ body {
   height: 100%;
   margin-top: 30px;
   margin-bottom: 30px;
+  justify-content: flex-end;
+  overflow: hidden;
 }
 
 .chat-input {
   padding: 0 20px 20px;
-  margin-top: auto;
 }
 
 .chat-input__inner {
-  padding: 20px;
+  padding-right: 20px;
   background: #fff;
   border-radius: inherit;
 }
@@ -43,10 +44,16 @@ body {
 .message-container {
   flex: 1;
   padding: 20px;
-  overflow: auto;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  flex-direction: column-reverse;
+  overflow: auto;
+  height: 100%;
+}
+
+.message-form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
 }
 
 .message {
@@ -54,4 +61,21 @@ body {
   padding: 8px;
   margin-top: 10px;
   border-radius: 10px;
+}
+
+.message-form__input {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 20px;
+}
+
+.message-form__input:focus {
+  outline: none;
+}
+
+.message-container-wrapper {
+  margin-top: auto;
+  height: 100%;
+  overflow: hidden;
 }

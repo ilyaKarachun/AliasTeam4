@@ -116,11 +116,13 @@ class GameProcess {
           )
         ) {
           let validMessage = true;
+          let resultValid;
           if (userId === this.roundData.leadingPlayerId) {
-            validMessage = !gameMechanicsService.rootWordRecognition(
+            resultValid = gameMechanicsService.rootWordRecognition(
               this.roundData.word || '',
               msg,
-            ).wrong;
+            );
+            validMessage = !resultValid.wrong;
           }
 
           if (validMessage) {
@@ -133,7 +135,7 @@ class GameProcess {
             this.notifyAllMembers(`${timestamp} <<${userId}>>: ${msg}`);
             this.addMessageToHistory(message);
           } else {
-            conn.send('Do not use similar words in your description!');
+            conn.send(`${resultValid.message}: ${resultValid.words}`);
           }
 
           // check word if author is not leading player
