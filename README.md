@@ -10,7 +10,6 @@
   - [End Game](#end-game)
 - [System Requirements](#system-requirements)
 - [Setup and Installation](#setup)
-- [Architecture](#architecture)
 - [Core Modules](#core-modules)
 - [APIs](#apis)
   - [Endpoint /users](#endpoint-users)
@@ -62,11 +61,31 @@ The game concludes after a predetermined number of rounds, with the highest-scor
 
 ## Setup and Installation
 
-Details on installing Node.js, setting up the database, cloning the repository, and installing dependencies.
+**Installation Steps:**
 
-## Architecture
+Clone the repository using the following link:
 
-Outline of the server setup, API endpoints, and database schema.
+```
+git clone https://github.com/ilyaKarachun/AliasTeam4/tree/main
+```
+
+Run the following command to install dependencies:
+
+```
+npm install
+```
+
+Launch Docker using the command:
+
+```
+docker-compose -f docker-compose.dev.yaml up -d
+```
+
+The application's base URL is:
+
+```
+http://localhost:3000/api/v1/
+```
 
 ## Core Modules
 
@@ -671,15 +690,28 @@ This approach provides a secure and efficient means of managing user sessions, e
 
 ## Testing
 
-Guide on unit and integration testing.
+To run tests, execute `npm test`, and for coverage analysis, use `npm test-coverage`.
+Ensure Docker is running, with the server container disabled and only the database container enabled. This setup allows tests to interact with the database while maintaining server isolation. These commands integrate seamlessly into your development workflow, ensuring code reliability and overall application quality.
 
 ## Deployment
 
-Instructions for deploying the application.
+The application has been deployed using AWS infrastructure.
+
+```
+http://34.207.240.236:3000/
+```
 
 ## Future Enhancements
 
-Suggestions for additional features or improvements.
+**Suggestions for Additional Features or Improvements:**
+
+- Enhanced Visual Design: Improve the overall aesthetic of the application, with a specific focus on refining the game chat interface for a more user-friendly experience.
+
+- Visible Timer: Introduce a visible timer during gameplay to enhance user awareness of time constraints, providing a more dynamic and engaging gaming environment.
+
+- Role Clarity: Provide clearer communication to players about their assigned roles within the game, ensuring a better understanding of their responsibilities and contributions.
+
+- Database Integration for Game Words: Implement the capability to store game words in a database, allowing for efficient retrieval and management. This feature enhances flexibility and scalability in handling the game's content.
 
 ## FAQ
 
@@ -687,4 +719,4 @@ Common questions and troubleshooting tips.
 
 ## Conclusion [(Back to content)](#content)
 
-Final remarks and encouragement for further exploration.
+Concluding the Alias game creation journey, every challenge has been a stepping stone in your growth as a developer. Stay curious, be resilient, and keep innovating. Your suggestions for improvement are always welcome, and we look forward to enhancing the gaming experience. Happy coding, and may your gaming adventures be filled with joy!
