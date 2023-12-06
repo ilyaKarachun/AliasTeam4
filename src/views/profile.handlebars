@@ -1,0 +1,59 @@
+<div class="profile-info">
+    <div class="profile-row-title">
+        <p class="profile-title">Your Profile</p>
+
+    {{!-- buttons --}}
+        <button id="delete-button-profile">Delete</button>
+    </div>
+
+    {{!-- info --}}
+    <div class="profile-column">
+        <div class="profile-row">
+            <div>user name:</div><div id="userName">{{data.username}}</div>
+        </div>
+        <div class="profile-row">
+            <div>user mail:</div><div id="userMail">{{data.email}}</div>
+        </div>
+        <div class="profile-row">
+            <div>user status:</div><div id="userStatus">{{data.status}}</div>
+        </div>
+        <div class="profile-column">
+            <p class="profile-subtitle">User statistic:</p>
+
+            {{#each gamesInfo}}
+            <div class="statistic-profile">
+                <div class="profile-row">
+                    <div>game name:</div><div id="gameName{{this.name}}">{{this.name}}</div>
+                </div>
+                <div class="profile-row">
+                    <div>game status:</div><div id="gameName{{this.status}}">{{this.status}}</div>
+                </div>
+                <div class="profile-row">
+                    <div>level:</div><div id="level{{this.level}}">{{this.level}}</div>
+                </div>
+                <div class="profile-row">
+
+                    <div>score:</div><div id="score{{this}}">
+                        <div class="profile-column">
+                            <div class="profile-row">
+                                <div>team 1: </div>
+                                <div>{{this.score.team_1}}</div>
+                            </div>
+                            <div class="profile-row">
+                                <div>team 2: </div>
+                                <div>{{this.score.team_2}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-row">
+                    <div>won:</div><div id="won{{this.won}}">{{this.won}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<script src='../../script/get-cookie.js'></script>
+<script src='../../script/profile.js'></script>

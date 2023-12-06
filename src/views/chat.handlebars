@@ -1,0 +1,33 @@
+<div class='chat-container'>
+  <div class='chat-container__inner'>
+    <div class='message-container-wrapper'>
+      <div class='message-container' id='message-container'></div>
+    </div>
+
+    <div class='chat-input'>
+      <div class='chat-input__inner'>
+        <form id='messages-form' class='message-form'>
+          <input
+            type='text'
+            name='message'
+            id='message-input'
+            class='message-form__input'
+            placeholder='Enter message here'
+            required
+          />
+          <button type='submit' class='message-form__submit-btn'>
+            <img
+              width='20'
+              height='20'
+              src='../../assets/icons/send-icon.svg'
+            />
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src='../../script/get-cookie.js'></script>
+<script src='../../script/auth-check.js'></script>
+<script src='../../script/chat.js'></script>

@@ -1,0 +1,30 @@
+<div style='padding: 40px'>
+  <p>name: {{gameInfo.name}}</p>
+  <p>game id: {{gameInfo.id}}</p>
+  <p>team size: {{gameInfo.team_size}}</p>
+  <p>game status: {{gameInfo.status}}</p>
+  <h2>Players</h2>
+  <ul>
+    <li>Team 1:
+      {{#each gameInfo.team_1}}
+        <p>{{this}}</p>
+      {{/each}}
+    </li>
+
+    <li>Team 2:
+      {{#each gameInfo.team_2}}
+        <p>{{this}}</p>
+      {{/each}}
+    </li>
+  </ul>
+
+  {{#ifEquals gameInfo.status 'creating'}}
+    <div id='join-team-container'>
+      <button data-id='1'>Join Team 1</button>
+      <button data-id='2'>Join Team 2</button>
+    </div>
+  {{/ifEquals}}
+</div>
+
+<script src='../../script/get-cookie.js'></script>
+<script src='../../script/join-game.js'></script>
