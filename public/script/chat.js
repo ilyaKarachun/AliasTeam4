@@ -32,5 +32,5 @@ socket.onmessage = function (event) {
   messageElem.classList.add('message');
   messageElem.textContent = message;
 
-  messagesContainer.append(messageElem);
+  messagesContainer.prepend(messageElem);
 };
