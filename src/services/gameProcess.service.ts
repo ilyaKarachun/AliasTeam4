@@ -55,8 +55,6 @@ class GameProcess {
       turn: null,
       word: null,
     };
-
-    this.gameId = gameId;
   }
 
   /**

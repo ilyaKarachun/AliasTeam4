@@ -90,4 +90,5 @@ const gameMechanicsService = {
     }
   },
 };
+
 export default gameMechanicsService;
